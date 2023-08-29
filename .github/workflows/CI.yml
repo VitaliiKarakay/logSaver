@@ -25,10 +25,10 @@ jobs:
       run: wget -O- -nv https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.52.2
       
     - name: Check lint
-      run: golangci-lint --version
+      run: ./bin/golangci-lint --version
       
     - name: Run lint
-      run: golangci-lint run
+      run: ./bin/golangci-lint run
            
     - name: Build
       run: go build -v ./...
