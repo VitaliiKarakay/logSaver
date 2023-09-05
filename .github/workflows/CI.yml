@@ -27,7 +27,7 @@ jobs:
       run: ./bin/golangci-lint --version
       
     - name: Run lint
-      run: ./bin/golangci-lint run /home/runner/work/logSaver/...
+      run: ./bin/golangci-lint run 
            
     - name: Build
       run: mkdir -p bin | go build -v -o ./bin ./...

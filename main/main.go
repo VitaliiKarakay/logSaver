@@ -1,12 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/godror/godror"
 )
 
 /*Необходимо создать сервис который будет принимать и сохранять логи от сервисов которые отправляют SMS и Email сообщения.
@@ -50,38 +48,39 @@ func main() {
 	r.GET("/", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"Message": "Log Saver"})
 	})
-	r.POST("/log", logHandler)
+	// r.POST("/log", logHandler)
 
 	r.Run(":8080")
 }
-func logHandler(c *gin.Context) {
-	var logData Log
-	if err := c.BindJSON(&logData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
 
-	db, _ := SetupDB()
+// func logHandler(c *gin.Context) {
+// 	var logData Log
+// 	if err := c.BindJSON(&logData); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	_, err := db.Exec("INSERT INTO log (user_id, phone, action_id, action_title, action_type, message, sender, status, language, full_response, created, updated, message_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
-		logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
-		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
-		logData.Created, logData.Updated, logData.MessageId)
+// 	db, _ := SetupDB()
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
-		return
-	}
-	defer db.Close()
+// 	_, err := db.Exec("INSERT INTO log (user_id, phone, action_id, action_title, action_type, message, sender, status, language, full_response, created, updated, message_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
+// 		logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
+// 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
+// 		logData.Created, logData.Updated, logData.MessageId)
 
-	c.JSON(http.StatusOK, gin.H{"message": "log saved"})
-}
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+// 		return
+// 	}
+// 	defer db.Close()
 
-func SetupDB() (*sql.DB, error) {
-	dsn := "hr/hr@//DESKTOP-DOVQPAO:1521/XEPDB1"
-	db, err := sql.Open(godror.DriverName, dsn)
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
-}
+// 	c.JSON(http.StatusOK, gin.H{"message": "log saved"})
+// }
+
+// func SetupDB() (*sql.DB, error) {
+// 	dsn := "hr/hr@//DESKTOP-DOVQPAO:1521/XEPDB1"
+// 	db, err := sql.Open(godror.DriverName, dsn)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return db, nil
+// }
