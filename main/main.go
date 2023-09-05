@@ -2,10 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"github.com/gin-gonic/gin"
-	"github.com/godror/godror"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/godror/godror"
 )
 
 /*Необходимо создать сервис который будет принимать и сохранять логи от сервисов которые отправляют SMS и Email сообщения.
