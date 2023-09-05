@@ -2,7 +2,10 @@ module logSaver
 
 go 1.21
 
-require github.com/gin-gonic/gin v1.9.1
+require (
+	github.com/gin-gonic/gin v1.9.1
+	github.com/sijms/go-ora/v2 v2.7.17
+)
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect
