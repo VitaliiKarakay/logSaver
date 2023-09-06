@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"logSaver/internal/app"
 	"net/http"
 	"time"
 
@@ -43,17 +44,21 @@ type Log struct {
 	FullResponse string
 	Created      time.Time
 	Updated      time.Time
-	MessageId    string
+	MessageID    string
 }
 
 func main() {
+
 	r := gin.Default()
 	r.GET("/", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"Message": "Log Saver"})
 	})
 	r.POST("/log", logHandler)
 
-	r.Run(":8080")
+	err := r.Run(":8080")
+	if err != nil {
+		return
+	}
 }
 
 func logHandler(c *gin.Context) {
@@ -62,29 +67,27 @@ func logHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	db, _ := SetupDB()
-
-	_, err := db.Exec("INSERT INTO log (user_id, phone, action_id, action_title, action_type, message, sender, status, language, full_response, created, updated, message_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)",
-		logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
-		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
-		logData.Created, logData.Updated, logData.MessageId)
-
+	newDB := app.NewDB()
+	db, err := newDB.SetupDB()
 	if err != nil {
+		fmt.Println(err)
+	}
+	statement, err := db.Prepare(`INSERT INTO LOG (user_id, phone, action_id, action_title, action_type, message, sender, status, language, full_response, created, updated, message_id)
+							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType, :Message, :Sender, :Status, :Language, :FullResponse, :Created, :Updated, :MessageID)`)
+	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
+		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
+		logData.Created, logData.Updated, logData.MessageID)
+	if err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
 		return
 	}
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(db)
 
 	c.JSON(http.StatusOK, gin.H{"message": "log saved"})
-}
-
-func SetupDB() (*sql.DB, error) {
-	dsn := "hr/hr@//DESKTOP-DOVQPAO:1521/XEPDB1"
-	db, err := sql.Open("oracle", dsn)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-	return db, nil
 }
