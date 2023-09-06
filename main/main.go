@@ -2,10 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"github.com/gin-gonic/gin"
-	"github.com/godror/godror"
+	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/sijms/go-ora/v2"
 )
 
 /*Необходимо создать сервис который будет принимать и сохранять логи от сервисов которые отправляют SMS и Email сообщения.
@@ -53,6 +55,7 @@ func main() {
 
 	r.Run(":8080")
 }
+
 func logHandler(c *gin.Context) {
 	var logData Log
 	if err := c.BindJSON(&logData); err != nil {
@@ -78,8 +81,9 @@ func logHandler(c *gin.Context) {
 
 func SetupDB() (*sql.DB, error) {
 	dsn := "hr/hr@//DESKTOP-DOVQPAO:1521/XEPDB1"
-	db, err := sql.Open(godror.DriverName, dsn)
+	db, err := sql.Open("oracle", dsn)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	return db, nil
