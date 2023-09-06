@@ -14,14 +14,14 @@ var dbParams = map[string]string{
 	"password": "hr",
 }
 
-type db struct {
+type Db struct {
 }
 
-func NewDB() db {
-	return db{}
+func NewDB() Db {
+	return Db{}
 }
 
-func (db) SetupDB() (*sql.DB, error) {
+func (Db) SetupDB() (*sql.DB, error) {
 	connectionString := "oracle://" + dbParams["username"] + ":" + dbParams["password"] + "@" + dbParams["server"] + ":" + dbParams["port"] + "/" + dbParams["service"]
 	db, err := sql.Open("oracle", connectionString)
 
