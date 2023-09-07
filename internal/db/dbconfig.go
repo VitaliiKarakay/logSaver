@@ -1,11 +1,11 @@
-package app
+package db
 
 import (
 	"encoding/json"
 	"os"
 )
 
-type DBConfig struct {
+type Config struct {
 	Service  string `json:"service"`
 	Username string `json:"username"`
 	Server   string `json:"server"`
@@ -13,7 +13,7 @@ type DBConfig struct {
 	Password string `json:"password"`
 }
 
-func ReadConfig(filename string) (*DBConfig, error) {
+func ReadConfig(filename string) (*Config, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func ReadConfig(filename string) (*DBConfig, error) {
 		}
 	}(file)
 
-	config := &DBConfig{}
+	config := &Config{}
 	decoder := json.NewDecoder(file)
 	if err := decoder.Decode(config); err != nil {
 		return nil, err
