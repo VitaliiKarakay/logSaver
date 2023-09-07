@@ -6,12 +6,10 @@ import (
 	_ "fmt"
 )
 
-var dbParams = map[string]string{
-	"service":  "XEPDB1",
-	"username": "hr",
-	"server":   "DESKTOP-DOVQPAO",
-	"port":     "1521",
-	"password": "hr",
+var path string
+
+func init() {
+	path = "config/config.json"
 }
 
 type Db struct {
@@ -22,7 +20,12 @@ func NewDB() Db {
 }
 
 func (Db) SetupDB() (*sql.DB, error) {
-	connectionString := "oracle://" + dbParams["username"] + ":" + dbParams["password"] + "@" + dbParams["server"] + ":" + dbParams["port"] + "/" + dbParams["service"]
+	config, err := ReadConfig(path)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	connectionString := "oracle://" + config.Username + ":" + config.Password + "@" + config.Server + ":" + config.Port + "/" + config.Service
 	db, err := sql.Open("oracle", connectionString)
 
 	if err != nil {
