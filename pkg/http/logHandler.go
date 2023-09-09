@@ -40,8 +40,11 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	statement, err := connection.Prepare(`INSERT INTO LOG (user_id, phone, action_id, action_title, action_type, message, sender, status, language, full_response, created, updated, message_id)
-							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType, :Message, :Sender, :Status, :Language, :FullResponse, :Created, :Updated, :MessageID)`)
+	statement, err := connection.Prepare(`INSERT INTO LOG (user_id, phone, action_id, action_title, action_type, 
+                 message, sender, status, language, full_response, created, updated, message_id)
+							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
+							           :Message, :Sender, :Status, :Language, :FullResponse, :Created,
+							           :Updated, :MessageID)`)
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
 		logData.Created, logData.Updated, logData.MessageID)
