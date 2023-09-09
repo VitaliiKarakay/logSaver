@@ -1,10 +1,10 @@
-package handlers
+package http
 
 import (
 	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"logSaver/internal/db"
+	"logSaver/pkg/store"
 	"net/http"
 	"time"
 )
@@ -34,7 +34,7 @@ func (lh *LogHandler) HandleLog(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	newDB := db.NewDB()
+	newDB := store.NewDB()
 	connection, err := newDB.SetupDB()
 	if err != nil {
 		fmt.Println(err)

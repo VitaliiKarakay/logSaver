@@ -1,15 +1,16 @@
-package db
+package store
 
 import (
 	"database/sql"
 	"fmt"
 	_ "fmt"
+	"logSaver/pkg/model"
 )
 
 var path string
 
 func init() {
-	path = "config/config.json"
+	path = "pkg/config/config.json"
 }
 
 type Db struct {
@@ -20,7 +21,7 @@ func NewDB() Db {
 }
 
 func (Db) SetupDB() (*sql.DB, error) {
-	config, err := ReadConfig(path)
+	config, err := model.ReadConfig(path)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
