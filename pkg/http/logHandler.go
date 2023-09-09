@@ -32,6 +32,7 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 	var logData Log
 	if err := context.BindJSON(&logData); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
 	}
 	newDB := store.NewDB()
@@ -47,6 +48,7 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+
 		return
 	}
 	defer func(connection *sql.DB) {
