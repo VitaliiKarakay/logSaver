@@ -3,7 +3,6 @@ package store
 import (
 	"database/sql"
 	"fmt"
-	_ "fmt"
 	"logSaver/pkg/model"
 )
 
@@ -13,17 +12,18 @@ func init() {
 	path = "pkg/config/config.json"
 }
 
-type Db struct {
+type DB struct {
 }
 
-func NewDB() Db {
-	return Db{}
+func NewDB() DB {
+	return DB{}
 }
 
-func (Db) SetupDB() (*sql.DB, error) {
+func (DB) SetupDB() (*sql.DB, error) {
 	config, err := model.ReadConfig(path)
 	if err != nil {
 		fmt.Println(err)
+
 		return nil, err
 	}
 	connectionString := "oracle://" + config.Username + ":" + config.Password + "@" + config.Server + ":" + config.Port + "/" + config.Service
@@ -31,7 +31,9 @@ func (Db) SetupDB() (*sql.DB, error) {
 
 	if err != nil {
 		fmt.Println(err)
+
 		return nil, err
 	}
+
 	return db, nil
 }

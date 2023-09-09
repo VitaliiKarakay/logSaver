@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -21,7 +22,7 @@ func ReadConfig(filename string) (*Config, error) {
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-
+			fmt.Println(err)
 		}
 	}(file)
 

@@ -28,10 +28,10 @@ type Log struct {
 type LogHandler struct {
 }
 
-func (lh *LogHandler) HandleLog(c *gin.Context) {
+func (lh *LogHandler) HandleLog(context *gin.Context) {
 	var logData Log
-	if err := c.BindJSON(&logData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := context.BindJSON(&logData); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	newDB := store.NewDB()
@@ -46,7 +46,7 @@ func (lh *LogHandler) HandleLog(c *gin.Context) {
 		logData.Created, logData.Updated, logData.MessageID)
 	if err != nil {
 		fmt.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
 		return
 	}
 	defer func(connection *sql.DB) {
@@ -56,5 +56,5 @@ func (lh *LogHandler) HandleLog(c *gin.Context) {
 		}
 	}(connection)
 
-	c.JSON(http.StatusOK, gin.H{"message": "log saved"})
+	context.JSON(http.StatusOK, gin.H{"message": "log saved"})
 }

@@ -16,8 +16,7 @@ func main() {
 	})
 	r.POST("/log", handler.HandleLog)
 
-	err := r.Run(":8080")
-	if err != nil {
+	if err := r.Run(":8080"); err != nil {
 		fmt.Println(err)
 		return
 	}
