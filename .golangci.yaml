@@ -42,6 +42,7 @@ linters:
     - tagliatelle
     - exhaustruct
     - nonamedreturns
+    - forbidigo
 issues:
   exclude-rules:
     - linters:
