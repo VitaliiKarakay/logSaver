@@ -6,11 +6,7 @@ import (
 	"logSaver/pkg/model"
 )
 
-var path string
-
-func init() {
-	path = "pkg/config/config.json"
-}
+var path = "pkg/config/config.json"
 
 type DB struct {
 }
