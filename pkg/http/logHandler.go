@@ -32,6 +32,7 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 	var logData Log
 	if err := context.BindJSON(&logData); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
 	}
 
@@ -40,12 +41,13 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+
 		return
 	}
 	defer func(connection *sql.DB) {
-		err := connection.Close()
-		if err != nil {
-			fmt.Println(err)
+		connectionErr := connection.Close()
+		if connectionErr != nil {
+			fmt.Println(connectionErr)
 		}
 	}(connection)
 
@@ -57,12 +59,13 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+
 		return
 	}
 	defer func(statement *sql.Stmt) {
-		err := statement.Close()
-		if err != nil {
-			fmt.Println(err)
+		statementErr := statement.Close()
+		if statementErr != nil {
+			fmt.Println(statementErr)
 		}
 	}(statement)
 
@@ -72,6 +75,7 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 	if err != nil {
 		fmt.Println(err)
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+
 		return
 	}
 
