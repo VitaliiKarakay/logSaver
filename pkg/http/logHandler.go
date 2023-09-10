@@ -4,32 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"logSaver/pkg/model"
 	"logSaver/pkg/store"
 	"net/http"
-	"time"
 )
-
-type Log struct {
-	UserID       int
-	Phone        string
-	ActionID     int
-	ActionTitle  string
-	ActionType   string
-	Message      string
-	Sender       string
-	Status       string
-	Language     string
-	FullResponse string
-	Created      time.Time
-	Updated      time.Time
-	MessageID    string
-}
 
 type LogHandler struct {
 }
 
 func (lh *LogHandler) HandleLog(context *gin.Context) {
-	var logData Log
+	logData := model.NewLog()
 	if err := context.BindJSON(&logData); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
