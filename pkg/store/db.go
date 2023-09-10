@@ -11,10 +11,6 @@ var path = "pkg/config/config.json"
 type DB struct {
 }
 
-func NewDB() DB {
-	return DB{}
-}
-
 func (DB) SetupDB() (*sql.DB, error) {
 	config, err := model.ReadConfig(path)
 	if err != nil {

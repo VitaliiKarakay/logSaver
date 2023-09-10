@@ -13,14 +13,14 @@ type LogHandler struct {
 }
 
 func (lh *LogHandler) HandleLog(context *gin.Context) {
-	logData := model.NewLog()
+	logData := model.Log{}
 	if err := context.BindJSON(&logData); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 	}
 
-	newDB := store.NewDB()
+	newDB := store.DB{}
 	connection, err := newDB.SetupDB()
 	if err != nil {
 		fmt.Println(err)

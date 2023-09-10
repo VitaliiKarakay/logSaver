@@ -17,7 +17,3 @@ type Log struct {
 	Updated      time.Time
 	MessageID    string
 }
-
-func NewLog() Log {
-	return Log{}
-}
