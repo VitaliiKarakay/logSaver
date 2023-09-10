@@ -22,7 +22,8 @@ func (DB) SetupDB() (*sql.DB, error) {
 
 		return nil, err
 	}
-	connectionString := "oracle://" + config.Username + ":" + config.Password + "@" + config.Server + ":" + config.Port + "/" + config.Service
+	connectionString := "oracle://" + config.Username + ":" + config.Password + "@" +
+		config.Server + ":" + config.Port + "/" + config.Service
 	db, err := sql.Open("oracle", connectionString)
 
 	if err != nil {

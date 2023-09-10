@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	_ "github.com/sijms/go-ora/v2"
 	http2 "logSaver/pkg/http"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/sijms/go-ora/v2"
 )
 
 func main() {

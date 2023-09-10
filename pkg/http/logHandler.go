@@ -2,10 +2,11 @@ package http
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"logSaver/pkg/model"
 	"logSaver/pkg/store"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type LogHandler struct {
