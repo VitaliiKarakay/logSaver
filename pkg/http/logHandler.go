@@ -45,6 +45,11 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
 							           :Message, :Sender, :Status, :Language, :FullResponse, :Created,
 							           :Updated, :MessageID)`)
+	if err != nil {
+		fmt.Println(err)
+
+		return
+	}
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
 		logData.Created, logData.Updated, logData.MessageID)
