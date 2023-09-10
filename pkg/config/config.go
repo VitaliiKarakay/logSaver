@@ -1,10 +1,12 @@
-package model
+package config
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
 )
+
+var path = "pkg/config/config.json"
 
 type Config struct {
 	Service  string `json:"service"`
@@ -14,8 +16,8 @@ type Config struct {
 	Password string `json:"password"`
 }
 
-func ReadConfig(filename string) (*Config, error) {
-	file, err := os.Open(filename)
+func ReadConfig() (*Config, error) {
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}

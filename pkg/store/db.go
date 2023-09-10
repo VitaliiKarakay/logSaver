@@ -2,31 +2,30 @@ package store
 
 import (
 	"database/sql"
-	"fmt"
-	"logSaver/pkg/model"
+	"logSaver/pkg/config"
 )
 
-var path = "pkg/config/config.json"
-
 type DB struct {
+	Oracle *sql.DB
+
+	LogRepository
 }
 
-func (DB) SetupDB() (*sql.DB, error) {
-	config, err := model.ReadConfig(path)
-	if err != nil {
-		fmt.Println(err)
-
-		return nil, err
-	}
-	connectionString := "oracle://" + config.Username + ":" + config.Password + "@" +
-		config.Server + ":" + config.Port + "/" + config.Service
+func New(conf *config.Config) (*DB, error) {
+	connectionString := "oracle://" + conf.Username + ":" + conf.Password + "@" +
+		conf.Server + ":" + conf.Port + "/" + conf.Service
 	db, err := sql.Open("oracle", connectionString)
 
 	if err != nil {
-		fmt.Println(err)
-
 		return nil, err
 	}
+	conn := &DB{Oracle: db}
 
-	return db, nil
+	conn.LogRepository = newLogRepository(db)
+
+	return conn, nil
+}
+
+func (database *DB) CloseConnection() error {
+	return database.Oracle.Close()
 }
