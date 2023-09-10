@@ -1,7 +1,6 @@
 package http
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"logSaver/pkg/model"
@@ -28,12 +27,12 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 
 		return
 	}
-	defer func(connection *sql.DB) {
+	defer func() {
 		connectionErr := connection.Close()
 		if connectionErr != nil {
 			fmt.Println(connectionErr)
 		}
-	}(connection)
+	}()
 
 	statement, err := connection.Prepare(`INSERT INTO LOG (user_id, phone, action_id, action_title, action_type, 
                  message, sender, status, language, full_response, created, updated, message_id)
@@ -46,12 +45,12 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 
 		return
 	}
-	defer func(statement *sql.Stmt) {
+	defer func() {
 		statementErr := statement.Close()
 		if statementErr != nil {
 			fmt.Println(statementErr)
 		}
-	}(statement)
+	}()
 
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
