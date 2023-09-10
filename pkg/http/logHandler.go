@@ -59,6 +59,13 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 
 		return
 	}
+	err = statement.Close()
+	if err != nil {
+		fmt.Println(err)
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "database error"})
+
+		return
+	}
 	defer func(connection *sql.DB) {
 		err := connection.Close()
 		if err != nil {
