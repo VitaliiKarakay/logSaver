@@ -16,7 +16,7 @@ func newLogRepository(db *sql.DB) LogRepository {
 	}
 }
 
-func (lr *LogRepository) Create(logData model.Log) error {
+func (lr *LogRepository) Insert(logData model.Log) error {
 	statement, err := lr.Oracle.Prepare(`INSERT INTO LOG (user_id, phone, action_id, action_title, action_type, 
                  message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
 							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
@@ -43,7 +43,7 @@ func (lr *LogRepository) Create(logData model.Log) error {
 	return nil
 }
 
-func (lr *LogRepository) Read(log *model.Log) (model.Log, error) {
+func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 	existLogData := model.Log{}
 	statement, err := lr.Oracle.Prepare(`SELECT USER_ID, PHONE, ACTION_ID, ACTION_TITLE, ACTION_TYPE,
        MESSAGE, SENDER, STATUS, LANGUAGE, FULL_RESPONSE, CREATED, UPDATED, MESSAGE_ID, STATUSDELIVE, COST FROM LOG

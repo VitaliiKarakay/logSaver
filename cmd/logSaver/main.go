@@ -26,18 +26,22 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	db, err := store.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer func() {
+		err = db.CloseConnection()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	err = http2.Run(db)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = db.CloseConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
 }

@@ -20,7 +20,7 @@ func (lh *LogHandler) CreateLog(context *gin.Context) {
 		return
 	}
 	logData.Cost = 0.0
-	err := lh.DB.LogRepository.Create(logData)
+	err := lh.DB.LogRepository.Insert(logData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
 
@@ -37,12 +37,12 @@ func (lh *LogHandler) UpdateLog(context *gin.Context) {
 
 		return
 	}
-	existLogData, err := lh.DB.LogRepository.Read(&newLogData)
+	existLogData, err := lh.DB.LogRepository.Get(&newLogData)
 	if err != nil {
 		return
 	}
 
-	updateExistLog(&existLogData, &newLogData)
+	existLogData.UpdateExistLog(&newLogData)
 
 	err = lh.DB.LogRepository.Update(existLogData)
 	if err != nil {
@@ -52,11 +52,4 @@ func (lh *LogHandler) UpdateLog(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{"message": "log updated"})
-}
-
-func updateExistLog(existLogData *model.Log, newLogData *model.Log) {
-	existLogData.Status = newLogData.Status
-	existLogData.StatusDelive = newLogData.StatusDelive
-	existLogData.Cost = newLogData.Cost
-	existLogData.Updated = newLogData.Updated
 }

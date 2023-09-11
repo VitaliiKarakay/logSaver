@@ -5,7 +5,7 @@ import "time"
 type Log struct {
 	UserID       int `db:"USER_ID"`
 	Phone        string
-	ActionID     int    `db:"Action_ID"`
+	ActionID     int    `db:"ACTION_ID"`
 	ActionTitle  string `db:"ACTION_TITLE"`
 	ActionType   string `db:"ACTION_TYPE"`
 	Message      string
@@ -18,4 +18,11 @@ type Log struct {
 	MessageID    string `db:"MESSAGE_ID"`
 	StatusDelive int
 	Cost         float32
+}
+
+func (l *Log) UpdateExistLog(newLogData *Log) {
+	l.Status = newLogData.Status
+	l.StatusDelive = newLogData.StatusDelive
+	l.Cost = newLogData.Cost
+	l.Updated = newLogData.Updated
 }
