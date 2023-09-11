@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"logSaver/pkg/store"
 	"net/http"
 )
@@ -12,11 +13,8 @@ func Run(db *store.DB) error {
 	r.GET("/", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"Message": "Log Saver"})
 	})
-	r.POST("/log", handler.HandleLog)
-	r.PUT("/log")
-	if err := r.Run(":8080"); err != nil {
-		return err
-	}
+	r.POST("/log", handler.CreateLog)
+	r.PUT("/log", handler.UpdateLog)
 
-	return nil
+	return r.Run(":8080")
 }

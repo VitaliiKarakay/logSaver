@@ -18,10 +18,10 @@ func newLogRepository(db *sql.DB) LogRepository {
 
 func (lr *LogRepository) Insert(logData model.Log) error {
 	statement, err := lr.Oracle.Prepare(`INSERT INTO LOG (user_id, phone, action_id, action_title, action_type, 
-                 message, sender, status, language, full_response, created, updated, message_id)
+                 message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
 							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
 							           :Message, :Sender, :Status, :Language, :FullResponse, :Created,
-							           :Updated, :MessageID)`)
+							           :Updated, :MessageID, :StatusDelive, :Cost)`)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,75 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
-		logData.Created, logData.Updated, logData.MessageID)
+		logData.Created, logData.Updated, logData.MessageID, logData.StatusDelive, logData.Cost)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
+	existLogData := model.Log{}
+	statement, err := lr.Oracle.Prepare(`SELECT USER_ID, PHONE, ACTION_ID, ACTION_TITLE, ACTION_TYPE,
+       MESSAGE, SENDER, STATUS, LANGUAGE, FULL_RESPONSE, CREATED, UPDATED, MESSAGE_ID, STATUSDELIVE, COST FROM LOG
+         WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
+	if err != nil {
+		return existLogData, err
+	}
+
+	defer func() {
+		statementErr := statement.Close()
+		if statementErr != nil {
+			fmt.Println(statementErr)
+		}
+	}()
+
+	result := statement.QueryRow(log.MessageID, log.Phone, log.Sender)
+	err = result.Scan(
+		&existLogData.UserID,
+		&existLogData.Phone,
+		&existLogData.ActionID,
+		&existLogData.ActionTitle,
+		&existLogData.ActionType,
+		&existLogData.Message,
+		&existLogData.Sender,
+		&existLogData.Status,
+		&existLogData.Language,
+		&existLogData.FullResponse,
+		&existLogData.Created,
+		&existLogData.Updated,
+		&existLogData.MessageID,
+		&existLogData.StatusDelive,
+		&existLogData.Cost,
+	)
+	if err != nil {
+		return existLogData, err
+	}
+
+	return existLogData, nil
+}
+
+func (lr *LogRepository) Update(logData model.Log) error {
+	statement, err := lr.Oracle.Prepare(`UPDATE LOG SET user_id = :UserID, phone = :Phone, action_id = :ActionID, 
+               action_title = :ActionTitle, action_type = :ActionType, message = :Message, sender = :Sender, 
+               status = :Status, language = :Language, full_response = :FullResponse, created = :Created, 
+               updated = :Updated, message_id = :MessageID, STATUSDELIVE = :StatusDelive, COST = :Cost
+           WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		statementErr := statement.Close()
+		if statementErr != nil {
+			fmt.Println(statementErr)
+		}
+	}()
+
+	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
+		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
+		logData.Created, logData.Updated, logData.MessageID, logData.StatusDelive, logData.Cost)
 	if err != nil {
 		return err
 	}
