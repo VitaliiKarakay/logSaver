@@ -5,7 +5,7 @@ import (
 
 	"log"
 	"logSaver/pkg/config"
-	http2 "logSaver/pkg/http"
+	"logSaver/pkg/http"
 	"logSaver/pkg/store"
 )
 
@@ -39,7 +39,7 @@ func main() {
 		}
 	}()
 
-	err = http2.Run(db)
+	err = http.Run(db)
 	if err != nil {
 		log.Fatal(err)
 	}
