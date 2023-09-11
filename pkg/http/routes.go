@@ -14,9 +14,6 @@ func Run(db *store.DB) error {
 	})
 	r.POST("/log", handler.CreateLog)
 	r.PUT("/log", handler.UpdateLog)
-	if err := r.Run(":8080"); err != nil {
-		return err
-	}
 
-	return nil
+	return r.Run(":8080")
 }
