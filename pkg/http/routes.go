@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"logSaver/pkg/store"
 	"net/http"
@@ -16,8 +15,6 @@ func Run(db *store.DB) error {
 	r.POST("/log", handler.HandleLog)
 
 	if err := r.Run(":8080"); err != nil {
-		fmt.Println(err)
-
 		return err
 	}
 

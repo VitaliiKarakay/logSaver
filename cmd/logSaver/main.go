@@ -21,7 +21,7 @@ func main() {
 	err = http2.Run(db)
 	if err != nil {
 		log.Fatal(err)
-	} //конец
+	}
 
 	err = db.CloseConnection()
 	if err != nil {
