@@ -12,7 +12,7 @@ type LogHandler struct {
 	DB *store.DB
 }
 
-func (lh *LogHandler) HandleLog(context *gin.Context) {
+func (lh *LogHandler) CreateLog(context *gin.Context) {
 	logData := model.Log{}
 	if err := context.BindJSON(&logData); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -28,4 +28,14 @@ func (lh *LogHandler) HandleLog(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, gin.H{"message": "log saved"})
+}
+
+func (lh *LogHandler) UpdateLog(context *gin.Context) {
+	logData := model.Log{}
+	if err := context.BindJSON(&logData); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
 }

@@ -18,7 +18,6 @@ import (
     updated: "2023-02-27T06:27:05.097Z",
     messageID: '6774560000068401360004'
   }
-
 */
 
 func main() {
