@@ -3,19 +3,19 @@ package model
 import "time"
 
 type Log struct {
-	UserID       int
+	UserID       int `db:"USER_ID"`
 	Phone        string
-	ActionID     int
-	ActionTitle  string
-	ActionType   string
+	ActionID     int    `db:"Action_ID"`
+	ActionTitle  string `db:"ACTION_TITLE"`
+	ActionType   string `db:"ACTION_TYPE"`
 	Message      string
 	Sender       string
 	Status       string
 	Language     string
-	FullResponse string
+	FullResponse string `db:"FULL_RESPONSE"`
 	Created      time.Time
 	Updated      time.Time
-	MessageID    string
+	MessageID    string `db:"MESSAGE_ID"`
 	StatusDelive int
 	Cost         float32
 }
