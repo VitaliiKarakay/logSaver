@@ -41,6 +41,6 @@ func main() {
 
 	err = http.Run(db)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 }
