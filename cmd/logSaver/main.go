@@ -35,7 +35,7 @@ func main() {
 	defer func() {
 		err = db.CloseConnection()
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 	}()
 
@@ -43,5 +43,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
