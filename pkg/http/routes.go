@@ -13,7 +13,7 @@ func Run(db *store.DB) error {
 		context.JSON(http.StatusOK, gin.H{"Message": "Log Saver"})
 	})
 	r.POST("/log", handler.HandleLog)
-
+	r.PUT("/log")
 	if err := r.Run(":8080"); err != nil {
 		return err
 	}
