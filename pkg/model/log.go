@@ -16,4 +16,6 @@ type Log struct {
 	Created      time.Time
 	Updated      time.Time
 	MessageID    string
+	StatusDelive int
+	Cost         float32
 }
