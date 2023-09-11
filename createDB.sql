@@ -15,4 +15,11 @@ create table Log
     updated       TIMESTAMP,
     message_id    VARCHAR2(100),
     CONSTRAINT logs_pk PRIMARY KEY (id)
-)
+);
+
+ALTER TABLE Log
+    ADD statusDelive NUMBER(2,0);
+ALTER TABLE Log
+    ADD cost NUMBER(10,4);
+ALTER TABLE Log
+    ADD CONSTRAINT unique_message_phone_sender UNIQUE (message_id, phone, sender);
