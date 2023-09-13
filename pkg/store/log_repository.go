@@ -3,8 +3,11 @@ package store
 import (
 	"database/sql"
 	"fmt"
+
 	"logSaver/pkg/model"
 )
+
+var logTableName = "Log"
 
 type LogRepository struct {
 	Oracle *sql.DB
@@ -17,7 +20,7 @@ func newLogRepository(db *sql.DB) LogRepository {
 }
 
 func (lr *LogRepository) Insert(logData model.Log) error {
-	statement, err := lr.Oracle.Prepare(`INSERT INTO LOG (user_id, phone, action_id, action_title, action_type, 
+	statement, err := lr.Oracle.Prepare(`INSERT INTO ` + logTableName + ` (user_id, phone, action_id, action_title, action_type, 
                  message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
 							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
 							           :Message, :Sender, :Status, :Language, :FullResponse, :Created,
@@ -46,8 +49,8 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 	existLogData := model.Log{}
 	statement, err := lr.Oracle.Prepare(`SELECT USER_ID, PHONE, ACTION_ID, ACTION_TITLE, ACTION_TYPE,
-       MESSAGE, SENDER, STATUS, LANGUAGE, FULL_RESPONSE, CREATED, UPDATED, MESSAGE_ID, STATUSDELIVE, COST FROM LOG
-         WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
+       MESSAGE, SENDER, STATUS, LANGUAGE, FULL_RESPONSE, CREATED, UPDATED, MESSAGE_ID, STATUSDELIVE, COST FROM ` +
+		logTableName + ` WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
 	if err != nil {
 		return existLogData, err
 	}
@@ -85,11 +88,11 @@ func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 }
 
 func (lr *LogRepository) Update(logData model.Log) error {
-	statement, err := lr.Oracle.Prepare(`UPDATE LOG SET user_id = :UserID, phone = :Phone, action_id = :ActionID, 
-               action_title = :ActionTitle, action_type = :ActionType, message = :Message, sender = :Sender, 
-               status = :Status, language = :Language, full_response = :FullResponse, created = :Created, 
-               updated = :Updated, message_id = :MessageID, STATUSDELIVE = :StatusDelive, COST = :Cost
-           WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
+	statement, err := lr.Oracle.Prepare(`UPDATE ` + logTableName + ` SET user_id = :UserID, phone = :Phone,
+               action_id = :ActionID, action_title = :ActionTitle, action_type = :ActionType, message = :Message,
+               sender = :Sender, status = :Status, language = :Language, full_response = :FullResponse,
+               created = :Created, updated = :Updated, message_id = :MessageID, STATUSDELIVE = :StatusDelive,
+               COST = :Cost WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
 	if err != nil {
 		return err
 	}

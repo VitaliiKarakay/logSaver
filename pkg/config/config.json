@@ -3,5 +3,6 @@
   "username": "hr",
   "server": "DESKTOP-DOVQPAO",
   "port": "1521",
-  "password": "hr"
+  "password": "hr",
+  "isTest": true
 }

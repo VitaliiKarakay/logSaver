@@ -14,6 +14,7 @@ type Config struct {
 	Server   string `json:"server"`
 	Port     string `json:"port"`
 	Password string `json:"password"`
+	IsTest   bool   `json:"isTest"`
 }
 
 func ReadConfig() (*Config, error) {
