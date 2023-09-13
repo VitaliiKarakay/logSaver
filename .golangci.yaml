@@ -43,6 +43,7 @@ linters:
     - exhaustruct
     - nonamedreturns
     - forbidigo
+    - ifshort
 issues:
   exclude-rules:
     - linters:
