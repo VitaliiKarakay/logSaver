@@ -2,16 +2,18 @@ package config
 
 import (
 	"github.com/caarlos0/env/v6"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/joho/godotenv"
 	"log"
+	"regexp"
 )
 
 type Config struct {
 	Service  string `env:"DB_SERVICE"`
 	Username string `env:"DB_USERNAME"`
+	Password string `env:"DB_PASSWORD"`
 	Server   string `env:"DB_SERVER"`
 	Port     string `env:"DB_PORT"`
-	Password string `env:"DB_PASSWORD"`
 }
 
 func ReadConfig() (*Config, error) {
@@ -24,4 +26,14 @@ func ReadConfig() (*Config, error) {
 		log.Fatalf("Error parsing environment variables: %v\n", err)
 	}
 	return &cfg, nil
+}
+
+func (c Config) Validate() error {
+	return validation.ValidateStruct(&c,
+		validation.Field(&c.Service, validation.Required),
+		validation.Field(&c.Username, validation.Required),
+		validation.Field(&c.Password, validation.Required),
+		validation.Field(&c.Server, validation.Required),
+		validation.Field(&c.Port, validation.Match(regexp.MustCompile(`^\d+$`)).Error("Post should ne a number")),
+	)
 }

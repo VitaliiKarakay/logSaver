@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"log"
 	"logSaver/pkg/config"
 )
 
@@ -12,6 +13,10 @@ type DB struct {
 }
 
 func New(conf *config.Config) (*DB, error) {
+	err := conf.Validate()
+	if err != nil {
+		log.Fatalf("Validation error: %v\n", err)
+	}
 	connectionString := "oracle://" + conf.Username + ":" + conf.Password + "@" +
 		conf.Server + ":" + conf.Port + "/" + conf.Service
 	db, err := sql.Open("oracle", connectionString)
