@@ -1,38 +1,27 @@
 package config
 
 import (
-	"encoding/json"
-	"fmt"
-	"os"
+	"github.com/caarlos0/env/v6"
+	"github.com/joho/godotenv"
+	"log"
 )
 
-var path = "pkg/config/config.json"
-
 type Config struct {
-	Service  string `json:"service"`
-	Username string `json:"username"`
-	Server   string `json:"server"`
-	Port     string `json:"port"`
-	Password string `json:"password"`
+	Service  string `env:"DB_SERVICE"`
+	Username string `env:"DB_USERNAME"`
+	Server   string `env:"DB_SERVER"`
+	Port     string `env:"DB_PORT"`
+	Password string `env:"DB_PASSWORD"`
 }
 
 func ReadConfig() (*Config, error) {
-	file, err := os.Open(path)
+	err := godotenv.Load()
 	if err != nil {
 		return nil, err
 	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
-	}(file)
-
-	config := &Config{}
-	decoder := json.NewDecoder(file)
-	if err := decoder.Decode(config); err != nil {
-		return nil, err
+	var cfg Config
+	if err := env.Parse(&cfg); err != nil {
+		log.Fatalf("Error parsing environment variables: %v\n", err)
 	}
-
-	return config, nil
+	return &cfg, nil
 }
