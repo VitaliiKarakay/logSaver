@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var path = "pkg/config/config.json"
+var path = "config.json"
 
 type Config struct {
 	Service  string `json:"service"`
