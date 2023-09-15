@@ -4,7 +4,7 @@ import (
 	"regexp"
 
 	"github.com/caarlos0/env/v6"
-	"github.com/go-ozzo/ozzo-validation/v4"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	_ "github.com/joho/godotenv/autoload"
 )
 
