@@ -1,13 +1,11 @@
 package config
 
 import (
-	"log"
 	"regexp"
 
 	"github.com/caarlos0/env/v6"
 	"github.com/go-ozzo/ozzo-validation/v4"
-	"github.com/joho/godotenv"
-	_ "github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type Config struct {
@@ -19,14 +17,10 @@ type Config struct {
 }
 
 func ReadConfig() (*Config, error) {
-	err := godotenv.Load()
+	var cfg Config
+	err := env.Parse(&cfg)
 	if err != nil {
 		return nil, err
-	}
-
-	var cfg Config
-	if err := env.Parse(&cfg); err != nil {
-		log.Fatalf("Error parsing environment variables: %v\n", err)
 	}
 
 	err = cfg.Validate()
