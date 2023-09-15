@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 
-	_ "github.com/sijms/go-ora/v2"
-
 	"logSaver/pkg/config"
 	"logSaver/pkg/http"
 	"logSaver/pkg/store"

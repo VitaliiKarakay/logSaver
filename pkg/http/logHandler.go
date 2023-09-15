@@ -20,7 +20,6 @@ func (lh *LogHandler) CreateLog(context *gin.Context) {
 
 		return
 	}
-	logData.Cost = 0.0
 	err := lh.DB.LogRepository.Insert(logData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})

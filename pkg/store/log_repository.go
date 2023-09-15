@@ -23,8 +23,8 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 	statement, err := lr.Oracle.Prepare(`INSERT INTO ` + logTableName + ` (user_id, phone, action_id, action_title, action_type, 
                  message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
 							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
-							           :Message, :Sender, :Status, :Language, :FullResponse, :Created,
-							           :Updated, :MessageID, :StatusDelive, :Cost)`)
+							           :Message, :Sender, :Status, :Language, :FullResponse, TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+							           TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), :MessageID, :StatusDelive, :Cost)`)
 	if err != nil {
 		return err
 	}
@@ -35,10 +35,14 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 			fmt.Println(statementErr)
 		}
 	}()
+	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
+	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
+	timezone := logData.Created.UTC().Format("-07:00")
 
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
-		logData.Created, logData.Updated, logData.MessageID, logData.StatusDelive, logData.Cost)
+		createdTime+" "+timezone, updatedTime+" "+timezone, logData.MessageID, logData.StatusDelive, logData.Cost)
+
 	if err != nil {
 		return err
 	}
@@ -91,7 +95,7 @@ func (lr *LogRepository) Update(logData model.Log) error {
 	statement, err := lr.Oracle.Prepare(`UPDATE ` + logTableName + ` SET user_id = :UserID, phone = :Phone,
                action_id = :ActionID, action_title = :ActionTitle, action_type = :ActionType, message = :Message,
                sender = :Sender, status = :Status, language = :Language, full_response = :FullResponse,
-               created = :Created, updated = :Updated, message_id = :MessageID, STATUSDELIVE = :StatusDelive,
+               created = TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), updated = TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), message_id = :MessageID, STATUSDELIVE = :StatusDelive,
                COST = :Cost WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
 	if err != nil {
 		return err
@@ -103,10 +107,13 @@ func (lr *LogRepository) Update(logData model.Log) error {
 			fmt.Println(statementErr)
 		}
 	}()
+	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
+	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
+	timezone := logData.Created.UTC().Format("-07:00")
 
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
-		logData.Created, logData.Updated, logData.MessageID, logData.StatusDelive, logData.Cost)
+		createdTime+" "+timezone, updatedTime+" "+timezone, logData.MessageID, logData.StatusDelive, logData.Cost)
 	if err != nil {
 		return err
 	}

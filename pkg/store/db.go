@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
+	_ "github.com/sijms/go-ora/v2"
+
 	"logSaver/pkg/config"
 )
 
@@ -17,7 +19,6 @@ func New(conf *config.Config) (*DB, error) {
 	connectionString := "oracle://" + conf.Username + ":" + conf.Password + "@" +
 		conf.Server + ":" + conf.Port + "/" + conf.Service
 	db, err := sql.Open("oracle", connectionString)
-
 	if err != nil {
 		return nil, err
 	}
