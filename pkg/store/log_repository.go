@@ -35,9 +35,7 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 			fmt.Println(statementErr)
 		}
 	}()
-	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
-	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
-	timezone := logData.Created.UTC().Format("-07:00")
+	createdTime, updatedTime, timezone := splitTime(&logData)
 
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
@@ -107,9 +105,7 @@ func (lr *LogRepository) Update(logData model.Log) error {
 			fmt.Println(statementErr)
 		}
 	}()
-	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
-	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
-	timezone := logData.Created.UTC().Format("-07:00")
+	createdTime, updatedTime, timezone := splitTime(&logData)
 
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
@@ -119,4 +115,11 @@ func (lr *LogRepository) Update(logData model.Log) error {
 	}
 
 	return nil
+}
+
+func splitTime(logData *model.Log) (string, string, string) {
+	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
+	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
+	timezone := logData.Created.UTC().Format("-07:00")
+	return createdTime, updatedTime, timezone
 }
