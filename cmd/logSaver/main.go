@@ -1,12 +1,13 @@
 package main
 
 import (
-	_ "github.com/sijms/go-ora/v2"
 	"log"
-	"logSaver/pkg/http"
-	"logSaver/pkg/store"
+
+	_ "github.com/sijms/go-ora/v2"
 
 	"logSaver/pkg/config"
+	"logSaver/pkg/http"
+	"logSaver/pkg/store"
 )
 
 /*
