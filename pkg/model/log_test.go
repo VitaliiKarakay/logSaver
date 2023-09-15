@@ -10,7 +10,7 @@ import (
 )
 
 func TestLog_UpdateExistLog(t *testing.T) {
-	log := model.GetTestLog(t)
+	log := model.CreateTestLog(t)
 	newLog := model.Log{
 		Status:       "Sent",
 		StatusDelive: 2,

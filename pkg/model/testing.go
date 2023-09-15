@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-func GetTestLog(t *testing.T) Log {
+func CreateTestLog(t *testing.T) Log {
 	t.Helper()
-	created, err := time.Parse(time.RFC3339, "2023-02-27T00:27:00.031Z")
+	created, err := time.Parse(time.RFC3339, "2023-02-27T00:27:00.031+02:00")
 	if err != nil {
 		fmt.Println("Parsing created data error: ", err)
 	}
-	updated, err := time.Parse(time.RFC3339, "2023-02-27T00:27:00.031Z")
+	updated, err := time.Parse(time.RFC3339, "2023-02-27T00:27:00.031+02:00")
 	if err != nil {
 		fmt.Println("Parsing updated data error: ", err)
 	}

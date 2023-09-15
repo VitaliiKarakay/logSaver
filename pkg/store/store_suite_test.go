@@ -1,6 +1,7 @@
 package store_test
 
 import (
+	"database/sql"
 	"fmt"
 	"testing"
 
@@ -12,7 +13,8 @@ import (
 
 type StoreSuite struct {
 	suite.Suite
-	Store *store.DB
+	Store  *store.DB
+	Oracle *sql.DB
 
 	tables []string
 }
