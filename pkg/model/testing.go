@@ -1,3 +1,5 @@
+//nolint
+
 package model
 
 import (

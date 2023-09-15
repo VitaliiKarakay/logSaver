@@ -20,11 +20,12 @@ func newLogRepository(db *sql.DB) LogRepository {
 }
 
 func (lr *LogRepository) Insert(logData model.Log) error {
-	statement, err := lr.Oracle.Prepare(`INSERT INTO ` + logTableName + ` (user_id, phone, action_id, action_title, action_type, 
+	query := `INSERT INTO ` + logTableName + ` (user_id, phone, action_id, action_title, action_type, 
                  message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
 							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
 							           :Message, :Sender, :Status, :Language, :FullResponse, TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
-							           TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), :MessageID, :StatusDelive, :Cost)`)
+							           TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), :MessageID, :StatusDelive, :Cost)`
+	statement, err := lr.Oracle.Prepare(query)
 	if err != nil {
 		return err
 	}
@@ -121,5 +122,6 @@ func splitTime(logData *model.Log) (string, string, string) {
 	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
 	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
 	timezone := logData.Created.UTC().Format("-07:00")
+
 	return createdTime, updatedTime, timezone
 }

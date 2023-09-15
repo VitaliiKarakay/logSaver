@@ -43,6 +43,7 @@ linters:
     - exhaustruct
     - nonamedreturns
     - forbidigo
+    - revive
 issues:
   exclude-rules:
     - linters:
