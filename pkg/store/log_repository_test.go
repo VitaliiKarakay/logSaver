@@ -2,6 +2,7 @@ package store_test
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/stretchr/testify/assert"
 
@@ -9,27 +10,33 @@ import (
 )
 
 func (s *StoreSuite) TestLogInsert() {
-	log := model.CreateTestLog(s.T())
+	newLog := model.CreateTestLog(s.T())
 
-	err := s.Store.LogRepository.Insert(log)
+	err := s.Store.LogRepository.Insert(newLog)
 	s.NoError(err)
 
-	receivedLog, err := s.Store.LogRepository.Get(&log)
-	fmt.Println(log)
+	receivedLog, err := s.Store.LogRepository.Get(&newLog)
+	fmt.Println(newLog)
 	fmt.Println(receivedLog)
-	assert.Equal(s.T(), log.UserID, receivedLog.UserID)
-	assert.Equal(s.T(), log.Phone, receivedLog.Phone)
-	assert.Equal(s.T(), log.ActionID, receivedLog.ActionID)
-	assert.Equal(s.T(), log.ActionTitle, receivedLog.ActionTitle)
-	assert.Equal(s.T(), log.ActionType, receivedLog.ActionType)
-	assert.Equal(s.T(), log.Message, receivedLog.Message)
-	assert.Equal(s.T(), log.Sender, receivedLog.Sender)
-	assert.Equal(s.T(), log.Status, receivedLog.Status)
-	assert.Equal(s.T(), log.Language, receivedLog.Language)
-	assert.Equal(s.T(), log.FullResponse, receivedLog.FullResponse)
-	assert.Equal(s.T(), log.Created.Unix(), receivedLog.Created.Unix())
-	assert.Equal(s.T(), log.Created.Unix(), receivedLog.Created.Unix())
-	assert.Equal(s.T(), log.MessageID, receivedLog.MessageID)
-	assert.Equal(s.T(), log.StatusDelive, receivedLog.StatusDelive)
-	assert.Equal(s.T(), log.Cost, receivedLog.Cost)
+	assert.Equal(s.T(), newLog.UserID, receivedLog.UserID)
+	assert.Equal(s.T(), newLog.Phone, receivedLog.Phone)
+	assert.Equal(s.T(), newLog.ActionID, receivedLog.ActionID)
+	assert.Equal(s.T(), newLog.ActionTitle, receivedLog.ActionTitle)
+	assert.Equal(s.T(), newLog.ActionType, receivedLog.ActionType)
+	assert.Equal(s.T(), newLog.Message, receivedLog.Message)
+	assert.Equal(s.T(), newLog.Sender, receivedLog.Sender)
+	assert.Equal(s.T(), newLog.Status, receivedLog.Status)
+	assert.Equal(s.T(), newLog.Language, receivedLog.Language)
+	assert.Equal(s.T(), newLog.FullResponse, receivedLog.FullResponse)
+	assert.Equal(s.T(), newLog.Created.Unix(), receivedLog.Created.Unix())
+	assert.Equal(s.T(), newLog.Created.Unix(), receivedLog.Created.Unix())
+	assert.Equal(s.T(), newLog.MessageID, receivedLog.MessageID)
+	assert.Equal(s.T(), newLog.StatusDelive, receivedLog.StatusDelive)
+	assert.Equal(s.T(), newLog.Cost, receivedLog.Cost)
+
+	err = s.Store.LogRepository.Insert(newLog)
+	if err != nil {
+		log.Print(err)
+	}
+	s.NotNil(err)
 }
