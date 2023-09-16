@@ -36,3 +36,22 @@ func CreateTestLog(t *testing.T) Log {
 		Cost:         2.28,
 	}
 }
+
+func CreateLogForUpdate(t *testing.T) Log {
+	t.Helper()
+
+	updated, err := time.Parse(time.RFC3339, "22023-02-27T06:27:05.097Z")
+	if err != nil {
+		fmt.Println("Parsing updated data error: ", err)
+	}
+
+	return Log{
+		Phone:        "380953071221",
+		Sender:       "intistele",
+		Status:       "success",
+		StatusDelive: 2,
+		Cost:         3.8351,
+		Updated:      updated,
+		MessageID:    "6774560000068401360008",
+	}
+}

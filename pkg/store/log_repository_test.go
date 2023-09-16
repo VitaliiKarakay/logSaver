@@ -44,3 +44,23 @@ func (s *StoreSuite) TestLogGet() {
 	assert.Equal(s.T(), newLog.StatusDelive, receivedLog.StatusDelive)
 	assert.Equal(s.T(), newLog.Cost, receivedLog.Cost)
 }
+
+func (s *StoreSuite) TestUpdateLog() {
+	newLog := model.CreateTestLog(s.T())
+	err := s.Store.LogRepository.Insert(newLog)
+
+	logForUpdate := model.CreateLogForUpdate(s.T())
+	newLog.UpdateExistLog(&logForUpdate)
+	err = s.Store.LogRepository.Update(newLog)
+	s.NoError(err)
+
+	updatedLog, err := s.Store.LogRepository.Get(&newLog)
+	s.NoError(err)
+	assert.Equal(s.T(), logForUpdate.Phone, updatedLog.Phone)
+	assert.Equal(s.T(), logForUpdate.Sender, updatedLog.Sender)
+	assert.Equal(s.T(), logForUpdate.Status, updatedLog.Status)
+	assert.Equal(s.T(), logForUpdate.StatusDelive, updatedLog.StatusDelive)
+	assert.Equal(s.T(), logForUpdate.Cost, updatedLog.Cost)
+	assert.Equal(s.T(), logForUpdate.Updated.Unix(), updatedLog.Updated.Unix())
+	assert.Equal(s.T(), logForUpdate.MessageID, updatedLog.MessageID)
+}
