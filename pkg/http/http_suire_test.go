@@ -1,7 +1,6 @@
-package store_test
+package http_test
 
 import (
-	"database/sql"
 	"fmt"
 	"testing"
 
@@ -11,22 +10,22 @@ import (
 	"logSaver/pkg/store"
 )
 
-type StoreSuite struct {
+type HttpSuite struct {
 	suite.Suite
-	Store  *store.DB
-	Oracle *sql.DB
+	Store *store.DB
 
 	tables []string
 }
 
 func TestRunSuite(t *testing.T) {
-	suite.Run(t, new(StoreSuite))
+	suite.Run(t, new(HttpSuite))
 }
 
-func (s *StoreSuite) SetupSuite() {
+func (s *HttpSuite) SetupSuite() {
 	s.tables = []string{
 		config.LogTest,
 	}
+
 	cfg, err := config.ReadConfig()
 	if err != nil {
 		fmt.Println("ReadConfig ", err)
@@ -40,19 +39,19 @@ func (s *StoreSuite) SetupSuite() {
 	s.Store = db
 }
 
-func (s *StoreSuite) BeforeTest() {
+func (s *HttpSuite) BeforeTest() {
 	s.cleanDB()
 }
 
-func (s *StoreSuite) TearDownTest() {
+func (s *HttpSuite) TearDownTest() {
 	s.cleanDB()
 }
 
-func (s *StoreSuite) TearDownSuite() {
+func (s *HttpSuite) TearDownSuite() {
 	s.cleanDB()
 }
 
-func (s *StoreSuite) cleanDB() {
+func (s *HttpSuite) cleanDB() {
 	for _, table := range s.tables {
 		_, err := s.Store.Oracle.Exec(`TRUNCATE TABLE ` + table)
 		if err != nil {

@@ -37,7 +37,7 @@ func (database *DB) CloseConnection() error {
 }
 
 func (*DB) setTableNames() {
-	logTableName = "LogTest"
+	logTableName = config.LogTest
 }
 
 func (database *DB) createTestTables() {
