@@ -1,7 +1,6 @@
 package store_test
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/stretchr/testify/assert"
@@ -15,9 +14,20 @@ func (s *StoreSuite) TestLogInsert() {
 	err := s.Store.LogRepository.Insert(newLog)
 	s.NoError(err)
 
+	err = s.Store.LogRepository.Insert(newLog)
+	if err != nil {
+		log.Print(err)
+	}
+	s.NotNil(err)
+}
+
+func (s *StoreSuite) TestLogGet() {
+	newLog := model.CreateTestLog(s.T())
+
+	err := s.Store.LogRepository.Insert(newLog)
+	s.NoError(err)
+
 	receivedLog, err := s.Store.LogRepository.Get(&newLog)
-	fmt.Println(newLog)
-	fmt.Println(receivedLog)
 	assert.Equal(s.T(), newLog.UserID, receivedLog.UserID)
 	assert.Equal(s.T(), newLog.Phone, receivedLog.Phone)
 	assert.Equal(s.T(), newLog.ActionID, receivedLog.ActionID)
@@ -33,10 +43,4 @@ func (s *StoreSuite) TestLogInsert() {
 	assert.Equal(s.T(), newLog.MessageID, receivedLog.MessageID)
 	assert.Equal(s.T(), newLog.StatusDelive, receivedLog.StatusDelive)
 	assert.Equal(s.T(), newLog.Cost, receivedLog.Cost)
-
-	err = s.Store.LogRepository.Insert(newLog)
-	if err != nil {
-		log.Print(err)
-	}
-	s.NotNil(err)
 }
