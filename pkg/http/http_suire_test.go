@@ -7,12 +7,14 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"logSaver/pkg/config"
+	"logSaver/pkg/http"
 	"logSaver/pkg/store"
 )
 
 type HttpSuite struct {
 	suite.Suite
-	Store *store.DB
+	Store      *store.DB
+	logHandler http.LogHandler
 
 	tables []string
 }
@@ -35,6 +37,8 @@ func (s *HttpSuite) SetupSuite() {
 	if err != nil {
 		fmt.Println("store.New ", err)
 	}
+
+	s.logHandler = http.LogHandler{DB: db}
 
 	s.Store = db
 }

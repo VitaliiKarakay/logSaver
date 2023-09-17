@@ -7,21 +7,79 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	http2 "logSaver/pkg/http"
+	"github.com/stretchr/testify/assert"
 )
 
 func (s *HttpSuite) TestCreateLog() {
 	r := gin.Default()
-	handler := http2.LogHandler{DB: s.Store} // Здесь создайте экземпляр вашего обработчика
-	r.POST("/log", handler.CreateLog)
+	r.POST("/log", s.logHandler.CreateLog)
 
 	go func() {
 		if err := r.Run(":8080"); err != nil {
-			s.T().Fatalf("Failed to start HTTP server: %v", err)
+			s.NoError(err)
 		}
 	}()
 
+	logData := createTestLog()
+
+	requestBody, err := json.Marshal(logData)
+	s.NoError(err)
+
+	req, err := http.NewRequest("POST", "http://localhost:8080/log", bytes.NewReader(requestBody))
+	s.NoError(err)
+
+	resp, err := http.DefaultClient.Do(req)
+	assert.Equal(s.T(), http.StatusOK, resp.StatusCode)
+	s.NoError(err)
+
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		s.NoError(err)
+	}(resp.Body)
+}
+
+func (s *HttpSuite) TestUpdateLog() {
+	r := gin.Default()
+	r.POST("/log", s.logHandler.CreateLog)
+	r.PUT("/log", s.logHandler.UpdateLog)
+
+	go func() {
+		if err := r.Run(":8080"); err != nil {
+			s.NoError(err)
+		}
+	}()
+
+	logData := createTestLog()
+
+	requestBody, err := json.Marshal(logData)
+	s.NoError(err)
+
+	req, err := http.NewRequest("POST", "http://localhost:8080/log", bytes.NewReader(requestBody))
+	s.NoError(err)
+
+	resp, err := http.DefaultClient.Do(req)
+	assert.Equal(s.T(), http.StatusOK, resp.StatusCode)
+	s.NoError(err)
+
+	updateExistLog(logData)
+
+	requestBody, err = json.Marshal(logData)
+	s.NoError(err)
+
+	req, err = http.NewRequest("PUT", "http://localhost:8080/log", bytes.NewReader(requestBody))
+	s.NoError(err)
+
+	resp, err = http.DefaultClient.Do(req)
+	assert.Equal(s.T(), http.StatusOK, resp.StatusCode)
+	s.NoError(err)
+
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		s.NoError(err)
+	}(resp.Body)
+}
+
+func createTestLog() map[string]interface{} {
 	logData := map[string]interface{}{
 		"userID":       2134496917,
 		"phone":        "380953071221",
@@ -39,24 +97,10 @@ func (s *HttpSuite) TestCreateLog() {
 		"StatusDelive": 1,
 		"cost":         14.88,
 	}
-
-	requestBody, err := json.Marshal(logData)
-	s.NoError(err)
-
-	req, err := http.NewRequest("POST", "http://localhost:8080/log", bytes.NewReader(requestBody))
-	s.NoError(err)
-
-	resp, err := http.DefaultClient.Do(req)
-	s.NoError(err)
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		s.NoError(err)
-	}(resp.Body)
-
-	s.NoError(err)
+	return logData
 }
 
-func (s *HttpSuite) TestUpdateLog() {
-
+func updateExistLog(logData map[string]interface{}) {
+	logData["StatusDelive"] = 2
+	logData["Cost"] = 3.22
 }
