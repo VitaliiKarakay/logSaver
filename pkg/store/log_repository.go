@@ -23,8 +23,10 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 	query := `INSERT INTO ` + logTableName + ` (user_id, phone, action_id, action_title, action_type, 
                  message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
 							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
-							           :Message, :Sender, :Status, :Language, :FullResponse, TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
-							           TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), :MessageID, :StatusDelive, :Cost)`
+							           :Message, :Sender, :Status, :Language, :FullResponse,
+								  	   TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+							           TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+									   :MessageID, :StatusDelive, :Cost)`
 	statement, err := lr.Oracle.Prepare(query)
 	if err != nil {
 		return err
@@ -94,7 +96,9 @@ func (lr *LogRepository) Update(logData model.Log) error {
 	statement, err := lr.Oracle.Prepare(`UPDATE ` + logTableName + ` SET user_id = :UserID, phone = :Phone,
                action_id = :ActionID, action_title = :ActionTitle, action_type = :ActionType, message = :Message,
                sender = :Sender, status = :Status, language = :Language, full_response = :FullResponse,
-               created = TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), updated = TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), message_id = :MessageID, STATUSDELIVE = :StatusDelive,
+               created = TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+			   updated = TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+			   message_id = :MessageID, STATUSDELIVE = :StatusDelive,
                COST = :Cost WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
 	if err != nil {
 		return err
