@@ -11,34 +11,36 @@ import (
 )
 
 func (s *HttpSuite) TestCreateLog() {
-	r := gin.Default()
-	r.POST("/log", s.logHandler.CreateLog)
-
-	go func() {
-		if err := r.Run(":8080"); err != nil {
-			s.NoError(err)
-		}
-	}()
+	s.setupHTTPServer()
 
 	logData := createTestLog()
-
 	requestBody, err := json.Marshal(logData)
 	s.NoError(err)
 
-	req, err := http.NewRequest("POST", "http://localhost:8080/log", bytes.NewReader(requestBody))
-	s.NoError(err)
+	response := s.sendHTTPRequest("POST", "/log", requestBody)
 
-	resp, err := http.DefaultClient.Do(req)
-	assert.Equal(s.T(), http.StatusOK, resp.StatusCode)
-	s.NoError(err)
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		s.NoError(err)
-	}(resp.Body)
+	s.assertStatusCode(http.StatusOK, response)
 }
 
 func (s *HttpSuite) TestUpdateLog() {
+	s.setupHTTPServer()
+
+	logData := createTestLog()
+	requestBody, err := json.Marshal(logData)
+	s.NoError(err)
+
+	response := s.sendHTTPRequest("POST", "/log", requestBody)
+
+	s.assertStatusCode(http.StatusOK, response)
+
+	updateExistLog(logData)
+
+	response = s.sendHTTPRequest("PUT", "/log", requestBody)
+
+	s.assertStatusCode(http.StatusOK, response)
+}
+
+func (s *HttpSuite) setupHTTPServer() {
 	r := gin.Default()
 	r.POST("/log", s.logHandler.CreateLog)
 	r.PUT("/log", s.logHandler.UpdateLog)
@@ -48,35 +50,25 @@ func (s *HttpSuite) TestUpdateLog() {
 			s.NoError(err)
 		}
 	}()
+}
 
-	logData := createTestLog()
-
-	requestBody, err := json.Marshal(logData)
-	s.NoError(err)
-
-	req, err := http.NewRequest("POST", "http://localhost:8080/log", bytes.NewReader(requestBody))
+func (s *HttpSuite) sendHTTPRequest(method, path string, body []byte) int {
+	url := "http://localhost:8080" + path
+	req, err := http.NewRequest(method, url, bytes.NewReader(body))
 	s.NoError(err)
 
 	resp, err := http.DefaultClient.Do(req)
-	assert.Equal(s.T(), http.StatusOK, resp.StatusCode)
 	s.NoError(err)
-
-	updateExistLog(logData)
-
-	requestBody, err = json.Marshal(logData)
-	s.NoError(err)
-
-	req, err = http.NewRequest("PUT", "http://localhost:8080/log", bytes.NewReader(requestBody))
-	s.NoError(err)
-
-	resp, err = http.DefaultClient.Do(req)
-	assert.Equal(s.T(), http.StatusOK, resp.StatusCode)
-	s.NoError(err)
-
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		s.NoError(err)
 	}(resp.Body)
+
+	return resp.StatusCode
+}
+
+func (s *HttpSuite) assertStatusCode(expected int, responseCode int) {
+	assert.Equal(s.T(), expected, responseCode)
 }
 
 func createTestLog() map[string]interface{} {
@@ -97,6 +89,7 @@ func createTestLog() map[string]interface{} {
 		"StatusDelive": 1,
 		"cost":         14.88,
 	}
+
 	return logData
 }
 
