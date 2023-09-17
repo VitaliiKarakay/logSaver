@@ -6,12 +6,11 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
 func (s *HttpSuite) TestCreateLog() {
-	s.setupHTTPServer()
+	//s.setupHTTPServer()
 
 	logData := createTestLog()
 	requestBody, err := json.Marshal(logData)
@@ -23,7 +22,7 @@ func (s *HttpSuite) TestCreateLog() {
 }
 
 func (s *HttpSuite) TestUpdateLog() {
-	s.setupHTTPServer()
+	//s.setupHTTPServer()
 
 	logData := createTestLog()
 	requestBody, err := json.Marshal(logData)
@@ -43,7 +42,7 @@ func (s *HttpSuite) TestUpdateLog() {
 }
 
 func (s *HttpSuite) TestUpdateIncorrectLog() {
-	s.setupHTTPServer()
+	//s.setupHTTPServer()
 
 	logData := createTestLog()
 	requestBody, err := json.Marshal(logData)
@@ -61,18 +60,6 @@ func (s *HttpSuite) TestUpdateIncorrectLog() {
 	response = s.sendHTTPRequest("PUT", "/log", requestBody)
 
 	s.assertStatusCode(http.StatusInternalServerError, response)
-}
-
-func (s *HttpSuite) setupHTTPServer() {
-	r := gin.Default()
-	r.POST("/log", s.logHandler.CreateLog)
-	r.PUT("/log", s.logHandler.UpdateLog)
-
-	go func() {
-		if err := r.Run(":8080"); err != nil {
-			s.NoError(err)
-		}
-	}()
 }
 
 func (s *HttpSuite) sendHTTPRequest(method, path string, body []byte) int {

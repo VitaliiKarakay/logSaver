@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
 
 	"logSaver/pkg/config"
@@ -41,6 +42,7 @@ func (s *HttpSuite) SetupSuite() {
 	s.logHandler = http.LogHandler{DB: db}
 
 	s.Store = db
+	s.setupHTTPServer()
 }
 
 func (s *HttpSuite) BeforeTest() {
@@ -62,4 +64,16 @@ func (s *HttpSuite) cleanDB() {
 			fmt.Println("cleanDB ", err)
 		}
 	}
+}
+
+func (s *HttpSuite) setupHTTPServer() {
+	r := gin.Default()
+	r.POST("/log", s.logHandler.CreateLog)
+	r.PUT("/log", s.logHandler.UpdateLog)
+
+	go func() {
+		if err := r.Run(":8080"); err != nil {
+			s.NoError(err)
+		}
+	}()
 }
