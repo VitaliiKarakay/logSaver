@@ -34,10 +34,33 @@ func (s *HttpSuite) TestUpdateLog() {
 	s.assertStatusCode(http.StatusOK, response)
 
 	updateExistLog(logData)
+	requestBody, err = json.Marshal(logData)
+	s.NoError(err)
 
 	response = s.sendHTTPRequest("PUT", "/log", requestBody)
 
 	s.assertStatusCode(http.StatusOK, response)
+}
+
+func (s *HttpSuite) TestUpdateIncorrectLog() {
+	s.setupHTTPServer()
+
+	logData := createTestLog()
+	requestBody, err := json.Marshal(logData)
+	s.NoError(err)
+
+	response := s.sendHTTPRequest("POST", "/log", requestBody)
+
+	s.assertStatusCode(http.StatusOK, response)
+
+	updateExistLog(logData)
+	logData["MessageID"] = "6774560000068401360001"
+	requestBody, err = json.Marshal(logData)
+	s.NoError(err)
+
+	response = s.sendHTTPRequest("PUT", "/log", requestBody)
+
+	s.assertStatusCode(http.StatusInternalServerError, response)
 }
 
 func (s *HttpSuite) setupHTTPServer() {
@@ -73,21 +96,21 @@ func (s *HttpSuite) assertStatusCode(expected int, responseCode int) {
 
 func createTestLog() map[string]interface{} {
 	logData := map[string]interface{}{
-		"userID":       2134496917,
-		"phone":        "380953071221",
-		"actionID":     324,
-		"actionTitle":  "Good Action",
-		"actionType":   "promoSMS",
-		"message":      "some message",
-		"sender":       "intistele",
-		"status":       "success",
-		"language":     "en",
-		"fullResponse": "sms_id: 6774560000068401360004",
-		"created":      "2023-02-27T00:27:00.031Z",
-		"updated":      "2023-02-27T00:27:00.031Z",
-		"messageID":    "6774560000068401360005",
+		"UserID":       2134496917,
+		"Phone":        "380953071221",
+		"ActionID":     324,
+		"ActionTitle":  "Good Action",
+		"ActionType":   "promoSMS",
+		"Message":      "some message",
+		"Sender":       "intistele",
+		"Status":       "success",
+		"Language":     "en",
+		"FullResponse": "sms_id: 6774560000068401360004",
+		"Created":      "2023-02-27T00:27:00.031Z",
+		"Updated":      "2023-02-27T00:27:00.031Z",
+		"MessageID":    "6774560000068401360005",
 		"StatusDelive": 1,
-		"cost":         14.88,
+		"Cost":         14.88,
 	}
 
 	return logData

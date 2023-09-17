@@ -39,6 +39,8 @@ func (lh *LogHandler) UpdateLog(context *gin.Context) {
 	}
 	existLogData, err := lh.DB.LogRepository.Get(&newLogData)
 	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
+
 		return
 	}
 
