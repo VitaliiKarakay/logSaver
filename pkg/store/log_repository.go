@@ -95,13 +95,16 @@ func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 }
 
 func (lr *LogRepository) Update(logData model.Log) error {
-	statement, err := lr.Oracle.Prepare(`UPDATE ` + logTableName + ` SET user_id = :UserID, phone = :Phone,
-               action_id = :ActionID, action_title = :ActionTitle, action_type = :ActionType, message = :Message,
-               sender = :Sender, status = :Status, language = :Language, full_response = :FullResponse,
-               created = TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
-			   updated = TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
-			   message_id = :MessageID, STATUSDELIVE = :StatusDelive,
-               COST = :Cost WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
+	firstPart := "Update "
+	lastPart := " SET user_id = :UserID, phone = :Phone, action_id = :ActionID, action_title = :ActionTitle," +
+		" action_type = :ActionType, message = :Message, sender = :Sender, status = :Status," +
+		" language = :Language, full_response = :FullResponse," +
+		" created = TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM')," +
+		" updated = TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM')," +
+		" message_id = :MessageID, STATUSDELIVE = :StatusDelive, COST = :Cost " +
+		"WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender"
+	resultQuery := firstPart + logTableName + lastPart
+	statement, err := lr.Oracle.Prepare(resultQuery)
 	if err != nil {
 		return err
 	}
