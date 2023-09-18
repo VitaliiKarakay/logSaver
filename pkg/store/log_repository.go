@@ -3,8 +3,11 @@ package store
 import (
 	"database/sql"
 	"fmt"
+
 	"logSaver/pkg/model"
 )
+
+var logTableName = "Log"
 
 type LogRepository struct {
 	Oracle *sql.DB
@@ -17,11 +20,14 @@ func newLogRepository(db *sql.DB) LogRepository {
 }
 
 func (lr *LogRepository) Insert(logData model.Log) error {
-	statement, err := lr.Oracle.Prepare(`INSERT INTO LOG (user_id, phone, action_id, action_title, action_type, 
+	query := `INSERT INTO ` + logTableName + ` (user_id, phone, action_id, action_title, action_type, 
                  message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
 							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
-							           :Message, :Sender, :Status, :Language, :FullResponse, :Created,
-							           :Updated, :MessageID, :StatusDelive, :Cost)`)
+							           :Message, :Sender, :Status, :Language, :FullResponse,
+								  	   TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+							           TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+									   :MessageID, :StatusDelive, :Cost)`
+	statement, err := lr.Oracle.Prepare(query)
 	if err != nil {
 		return err
 	}
@@ -32,10 +38,12 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 			fmt.Println(statementErr)
 		}
 	}()
+	createdTime, updatedTime, timezone := splitTime(&logData)
 
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
-		logData.Created, logData.Updated, logData.MessageID, logData.StatusDelive, logData.Cost)
+		createdTime+" "+timezone, updatedTime+" "+timezone, logData.MessageID, logData.StatusDelive, logData.Cost)
+
 	if err != nil {
 		return err
 	}
@@ -45,9 +53,11 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 
 func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 	existLogData := model.Log{}
-	statement, err := lr.Oracle.Prepare(`SELECT USER_ID, PHONE, ACTION_ID, ACTION_TITLE, ACTION_TYPE,
-       MESSAGE, SENDER, STATUS, LANGUAGE, FULL_RESPONSE, CREATED, UPDATED, MESSAGE_ID, STATUSDELIVE, COST FROM LOG
-         WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
+	firstPart := "SELECT USER_ID, PHONE, ACTION_ID, ACTION_TITLE, ACTION_TYPE," +
+		"MESSAGE, SENDER, STATUS, LANGUAGE, FULL_RESPONSE, CREATED, UPDATED, MESSAGE_ID, STATUSDELIVE, COST FROM "
+	lastPart := " WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender"
+	resultQuery := firstPart + logTableName + lastPart
+	statement, err := lr.Oracle.Prepare(resultQuery)
 	if err != nil {
 		return existLogData, err
 	}
@@ -85,11 +95,16 @@ func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 }
 
 func (lr *LogRepository) Update(logData model.Log) error {
-	statement, err := lr.Oracle.Prepare(`UPDATE LOG SET user_id = :UserID, phone = :Phone, action_id = :ActionID, 
-               action_title = :ActionTitle, action_type = :ActionType, message = :Message, sender = :Sender, 
-               status = :Status, language = :Language, full_response = :FullResponse, created = :Created, 
-               updated = :Updated, message_id = :MessageID, STATUSDELIVE = :StatusDelive, COST = :Cost
-           WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
+	firstPart := "Update "
+	lastPart := " SET user_id = :UserID, phone = :Phone, action_id = :ActionID, action_title = :ActionTitle," +
+		" action_type = :ActionType, message = :Message, sender = :Sender, status = :Status," +
+		" language = :Language, full_response = :FullResponse," +
+		" created = TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM')," +
+		" updated = TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM')," +
+		" message_id = :MessageID, STATUSDELIVE = :StatusDelive, COST = :Cost " +
+		"WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender"
+	resultQuery := firstPart + logTableName + lastPart
+	statement, err := lr.Oracle.Prepare(resultQuery)
 	if err != nil {
 		return err
 	}
@@ -100,13 +115,22 @@ func (lr *LogRepository) Update(logData model.Log) error {
 			fmt.Println(statementErr)
 		}
 	}()
+	createdTime, updatedTime, timezone := splitTime(&logData)
 
 	_, err = statement.Exec(logData.UserID, logData.Phone, logData.ActionID, logData.ActionTitle, logData.ActionType,
 		logData.Message, logData.Sender, logData.Status, logData.Language, logData.FullResponse,
-		logData.Created, logData.Updated, logData.MessageID, logData.StatusDelive, logData.Cost)
+		createdTime+" "+timezone, updatedTime+" "+timezone, logData.MessageID, logData.StatusDelive, logData.Cost)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func splitTime(logData *model.Log) (string, string, string) {
+	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
+	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
+	timezone := logData.Created.UTC().Format("-07:00")
+
+	return createdTime, updatedTime, timezone
 }

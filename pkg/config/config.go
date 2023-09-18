@@ -14,6 +14,7 @@ type Config struct {
 	Password string `env:"DB_PASSWORD"`
 	Server   string `env:"DB_SERVER"`
 	Port     string `env:"DB_PORT"`
+	IsTest   bool   `env:"IS_TEST"`
 }
 
 func ReadConfig() (*Config, error) {

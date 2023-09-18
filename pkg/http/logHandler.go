@@ -1,11 +1,12 @@
 package http
 
 import (
-	"logSaver/pkg/model"
-	"logSaver/pkg/store"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"logSaver/pkg/model"
+	"logSaver/pkg/store"
 )
 
 type LogHandler struct {
@@ -19,7 +20,6 @@ func (lh *LogHandler) CreateLog(context *gin.Context) {
 
 		return
 	}
-	logData.Cost = 0.0
 	err := lh.DB.LogRepository.Insert(logData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
@@ -39,6 +39,8 @@ func (lh *LogHandler) UpdateLog(context *gin.Context) {
 	}
 	existLogData, err := lh.DB.LogRepository.Get(&newLogData)
 	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
+
 		return
 	}
 
