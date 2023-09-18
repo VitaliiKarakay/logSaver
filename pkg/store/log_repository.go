@@ -20,14 +20,13 @@ func newLogRepository(db *sql.DB) LogRepository {
 }
 
 func (lr *LogRepository) Insert(logData model.Log) error {
-	firstPart := "INSERT INTO "
-	lastPart := " (user_id, phone, action_id, action_title, action_type, message, sender, status, language," +
-		" full_response, created, updated, message_id, STATUSDELIVE, COST) VALUES (:UserID, :Phone, :ActionID," +
-		" :ActionTitle, :ActionType, :Message, :Sender, :Status, :Language, :FullResponse, TO_TIMESTAMP_TZ(:Created," +
-		" 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM')," +
-		" :MessageID, :StatusDelive, :Cost)"
-	resultQuery := firstPart + logTableName + lastPart
-	query := resultQuery
+	query := `INSERT INTO ` + logTableName + ` (user_id, phone, action_id, action_title, action_type, 
+                 message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
+							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
+							           :Message, :Sender, :Status, :Language, :FullResponse,
+								  	   TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+							           TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+									   :MessageID, :StatusDelive, :Cost)`
 	statement, err := lr.Oracle.Prepare(query)
 	if err != nil {
 		return err
@@ -54,9 +53,11 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 
 func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 	existLogData := model.Log{}
-	statement, err := lr.Oracle.Prepare(`SELECT USER_ID, PHONE, ACTION_ID, ACTION_TITLE, ACTION_TYPE,
-       MESSAGE, SENDER, STATUS, LANGUAGE, FULL_RESPONSE, CREATED, UPDATED, MESSAGE_ID, STATUSDELIVE, COST FROM ` +
-		logTableName + ` WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender`)
+	firstPart := "SELECT USER_ID, PHONE, ACTION_ID, ACTION_TITLE, ACTION_TYPE," +
+		"MESSAGE, SENDER, STATUS, LANGUAGE, FULL_RESPONSE, CREATED, UPDATED, MESSAGE_ID, STATUSDELIVE, COST FROM "
+	lastPart := " WHERE MESSAGE_ID = :MessageID AND PHONE = :Phone AND SENDER = :Sender"
+	resultQuery := firstPart + logTableName + lastPart
+	statement, err := lr.Oracle.Prepare(resultQuery)
 	if err != nil {
 		return existLogData, err
 	}
