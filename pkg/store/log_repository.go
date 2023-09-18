@@ -20,13 +20,14 @@ func newLogRepository(db *sql.DB) LogRepository {
 }
 
 func (lr *LogRepository) Insert(logData model.Log) error {
-	query := `INSERT INTO ` + logTableName + ` (user_id, phone, action_id, action_title, action_type, 
-                 message, sender, status, language, full_response, created, updated, message_id, STATUSDELIVE, COST)
-							   VALUES (:UserID, :Phone, :ActionID, :ActionTitle, :ActionType,
-							           :Message, :Sender, :Status, :Language, :FullResponse,
-								  	   TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
-							           TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
-									   :MessageID, :StatusDelive, :Cost)`
+	firstPart := "INSERT INTO "
+	lastPart := " (user_id, phone, action_id, action_title, action_type, message, sender, status, language," +
+		" full_response, created, updated, message_id, STATUSDELIVE, COST) VALUES (:UserID, :Phone, :ActionID," +
+		" :ActionTitle, :ActionType, :Message, :Sender, :Status, :Language, :FullResponse, TO_TIMESTAMP_TZ(:Created," +
+		" 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM')," +
+		" :MessageID, :StatusDelive, :Cost)"
+	resultQuery := firstPart + logTableName + lastPart
+	query := resultQuery
 	statement, err := lr.Oracle.Prepare(query)
 	if err != nil {
 		return err
