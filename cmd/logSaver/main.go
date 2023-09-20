@@ -5,7 +5,7 @@ import (
 
 	"logSaver/pkg/config"
 	"logSaver/pkg/http"
-	"logSaver/pkg/store"
+	"logSaver/pkg/store/postgresstore"
 )
 
 /*
@@ -26,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db, err := store.New(cfg)
+	db, err := postgresstore.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}

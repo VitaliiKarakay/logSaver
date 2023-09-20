@@ -1,4 +1,4 @@
-package store
+package postgresstore
 
 import (
 	"database/sql"

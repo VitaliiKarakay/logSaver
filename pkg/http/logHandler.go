@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"logSaver/pkg/model"
-	"logSaver/pkg/store"
+	"logSaver/pkg/store/postgresstore"
 )
 
 type LogHandler struct {
-	DB *store.DB
+	DB *postgresstore.DB
 }
 
 func (lh *LogHandler) CreateLog(context *gin.Context) {

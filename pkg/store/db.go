@@ -10,38 +10,15 @@ import (
 	"logSaver/pkg/config"
 )
 
+type Store interface {
+	New(conf *config.Config) (*DB, error)
+	CloseConnection() error
+}
+
 type DB struct {
 	DB *sql.DB
 
 	LogRepository
-}
-
-func New(conf *config.Config) (*DB, error) {
-	var db *sql.DB
-	var err error
-	if conf.Database == "Oracle" {
-		connectionString := "oracle://" + conf.Username + ":" + conf.Password + "@" +
-			conf.Server + ":" + conf.Port + "/" + conf.Service
-		db, err = sql.Open("oracle", connectionString)
-	} else {
-		connectionString := "user=" + conf.Username + " password=" + conf.Password + " host=" + conf.Server + " port=" + conf.Port + " dbname=postgres sslmode=disable"
-		db, err = sql.Open("postgres", connectionString)
-	}
-	if err != nil {
-		return nil, err
-	}
-	conn := &DB{DB: db}
-	if conf.IsTest {
-		conn.setTableNames()
-		conn.createTestTables()
-	}
-	conn.LogRepository = newLogRepository(db)
-
-	return conn, nil
-}
-
-func (database *DB) CloseConnection() error {
-	return database.DB.Close()
 }
 
 func (*DB) setTableNames() {
