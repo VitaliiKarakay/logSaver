@@ -4,25 +4,33 @@ import (
 	"database/sql"
 	"fmt"
 
+	_ "github.com/lib/pq"
 	_ "github.com/sijms/go-ora/v2"
 
 	"logSaver/pkg/config"
 )
 
 type DB struct {
-	Oracle *sql.DB
+	DB *sql.DB
 
 	LogRepository
 }
 
 func New(conf *config.Config) (*DB, error) {
-	connectionString := "oracle://" + conf.Username + ":" + conf.Password + "@" +
-		conf.Server + ":" + conf.Port + "/" + conf.Service
-	db, err := sql.Open("oracle", connectionString)
+	var db *sql.DB
+	var err error
+	if conf.Database == "Oracle" {
+		connectionString := "oracle://" + conf.Username + ":" + conf.Password + "@" +
+			conf.Server + ":" + conf.Port + "/" + conf.Service
+		db, err = sql.Open("oracle", connectionString)
+	} else {
+		connectionString := "user=" + conf.Username + " password=" + conf.Password + " host=" + conf.Server + " port=" + conf.Port + " dbname=postgres sslmode=disable"
+		db, err = sql.Open("postgres", connectionString)
+	}
 	if err != nil {
 		return nil, err
 	}
-	conn := &DB{Oracle: db}
+	conn := &DB{DB: db}
 	if conf.IsTest {
 		conn.setTableNames()
 		conn.createTestTables()
@@ -33,7 +41,7 @@ func New(conf *config.Config) (*DB, error) {
 }
 
 func (database *DB) CloseConnection() error {
-	return database.Oracle.Close()
+	return database.DB.Close()
 }
 
 func (*DB) setTableNames() {
@@ -70,7 +78,7 @@ BEGIN
         )';
     END IF;
 END;`
-	_, err := database.Oracle.Exec(query)
+	_, err := database.DB.Exec(query)
 	if err != nil {
 		fmt.Println("createTestTables", err)
 	}

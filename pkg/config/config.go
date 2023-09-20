@@ -15,6 +15,7 @@ type Config struct {
 	Server   string `env:"DB_SERVER"`
 	Port     string `env:"DB_PORT"`
 	IsTest   bool   `env:"IS_TEST"`
+	Database string `env:"DATABASE"`
 }
 
 func ReadConfig() (*Config, error) {
@@ -39,5 +40,6 @@ func (c Config) Validate() error {
 		validation.Field(&c.Password, validation.Required),
 		validation.Field(&c.Server, validation.Required),
 		validation.Field(&c.Port, validation.Match(regexp.MustCompile(`^\d+$`)).Error("Post should ne a number")),
+		validation.Field(&c.Database, validation.Required),
 	)
 }

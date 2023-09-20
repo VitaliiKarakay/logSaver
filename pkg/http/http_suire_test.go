@@ -59,7 +59,7 @@ func (s *HttpSuite) TearDownSuite() {
 
 func (s *HttpSuite) cleanDB() {
 	for _, table := range s.tables {
-		_, err := s.Store.Oracle.Exec(`TRUNCATE TABLE ` + table)
+		_, err := s.Store.DB.Exec(`TRUNCATE TABLE ` + table)
 		if err != nil {
 			fmt.Println("cleanDB ", err)
 		}
