@@ -5,11 +5,12 @@ import (
 
 	"net/http"
 
-	"logSaver/pkg/store/oraclestore"
+	"logSaver/pkg/store/mongostore"
+	_ "logSaver/pkg/store/oraclestore"
 	_ "logSaver/pkg/store/postgresstore"
 )
 
-func Run(db *oraclestore.DB) error {
+func Run(db *mongostore.DB) error {
 	handler := LogHandler{DB: db}
 	r := gin.Default()
 	r.GET("/", func(context *gin.Context) {
