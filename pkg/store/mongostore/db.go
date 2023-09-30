@@ -9,8 +9,6 @@ import (
 	"logSaver/pkg/config"
 )
 
-var logTableName = "Log"
-
 type DB struct {
 	DB *mongo.Client
 
@@ -39,8 +37,4 @@ func New(conf *config.Config) (*DB, error) {
 
 func (database *DB) CloseConnection() error {
 	return database.DB.Disconnect(context.TODO())
-}
-
-func (*DB) setTableNames() {
-	logTableName = config.LogTest
 }
