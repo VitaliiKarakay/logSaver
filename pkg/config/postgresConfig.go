@@ -19,7 +19,7 @@ type PostgresConfig struct {
 
 func (c PostgresConfig) GetConnectionString(config PostgresConfig) string {
 	return "user=" + config.Username + " password=" + config.Password + " host=" + config.Server + " port=" +
-		config.Port + " dbname=" + config.DBName + "sslmode=disable"
+		config.Port + " dbname=" + config.DBName + " sslmode=disable"
 
 }
 
