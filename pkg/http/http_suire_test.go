@@ -9,7 +9,6 @@ import (
 
 	"logSaver/pkg/config"
 	"logSaver/pkg/http"
-	_ "logSaver/pkg/store"
 	"logSaver/pkg/store/mongostore"
 	_ "logSaver/pkg/store/postgresstore"
 )
@@ -64,8 +63,7 @@ func (s *HttpSuite) cleanDB() {
 
 	err := lr.DeleteAllLogs()
 	if err != nil {
-		// Обработайте ошибку, если необходимо
-		fmt.Println("Ошибка при очистке коллекции: ", err)
+		fmt.Println("Error while cleaning the DB ", err)
 	}
 }
 

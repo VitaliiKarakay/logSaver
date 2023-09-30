@@ -50,7 +50,6 @@ func (s *StoreSuite) cleanDB() {
 
 	err := lr.DeleteAllLogs()
 	if err != nil {
-		// Обработайте ошибку, если необходимо
-		fmt.Println("Ошибка при очистке коллекции: ", err)
+		fmt.Println("Error while cleaning the DB ", err)
 	}
 }
