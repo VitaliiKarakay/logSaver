@@ -10,8 +10,8 @@ import (
 	"logSaver/pkg/model"
 )
 
-var DBName = "mongodb"
-var collectionName = "logs"
+const DBName = "mongodb"
+const collectionName = "logs"
 
 type LogRepository struct {
 	DB       *mongo.Client
@@ -103,7 +103,7 @@ func (lr *LogRepository) Update(logData model.Log) error {
 	return nil
 }
 
-func (lr *LogRepository) DeleteAllLogs() error {
+func (lr *LogRepository) DeleteAllLogs() error { // перенести в store_suite
 	collection := lr.DB.Database(DBName).Collection(collectionName)
 
 	_, err := collection.DeleteMany(context.TODO(), bson.M{})
