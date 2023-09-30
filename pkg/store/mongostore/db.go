@@ -18,8 +18,7 @@ type DB struct {
 }
 
 func New(conf *config.Config) (*DB, error) {
-	connectionString := "mongodb://" + conf.Username + ":" + conf.Password + "@" +
-		conf.Server + ":" + conf.Port
+	connectionString := conf.MongoConfig.GetConnectionString(conf.MongoConfig)
 
 	clientOptions := options.Client().ApplyURI(connectionString)
 	client, err := mongo.Connect(context.TODO(), clientOptions)

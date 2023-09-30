@@ -15,13 +15,13 @@ type DB struct {
 }
 
 func New(conf *config.Config) (*DB, error) {
-	connectionString := "user=" + conf.Username + " password=" + conf.Password + " host=" + conf.Server + " port=" + conf.Port + " dbname=postgres sslmode=disable"
-	db, err := sql.Open("postgres", connectionString)
+	connectionString := conf.PostgresConfig.GetConnectionString(conf.PostgresConfig)
+	db, err := sql.Open(config.PostgresDriver, connectionString)
 	if err != nil {
 		return nil, err
 	}
 	conn := &DB{DB: db}
-	if conf.IsTest {
+	if conf.PostgresConfig.IsTest {
 		conn.setTableNames()
 		//conn.createTestTables()
 	}

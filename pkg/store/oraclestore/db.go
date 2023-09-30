@@ -15,15 +15,14 @@ type DB struct {
 }
 
 func New(conf *config.Config) (*DB, error) {
-	connectionString := "oracle://" + conf.Username + ":" + conf.Password + "@" +
-		conf.Server + ":" + conf.Port + "/" + conf.Service
+	connectionString := conf.OracleConfig.GetConnectionString(conf.OracleConfig)
 
 	db, err := sql.Open("oracle", connectionString)
 	if err != nil {
 		return nil, err
 	}
 	conn := &DB{DB: db}
-	if conf.IsTest {
+	if conf.OracleConfig.IsTest {
 		conn.setTableNames()
 		//conn.createTestTables()
 	}
