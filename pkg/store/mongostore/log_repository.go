@@ -5,6 +5,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"logSaver/pkg/model"
 )
@@ -13,19 +14,35 @@ var DBName = "mongodb"
 var collectionName = "logs"
 
 type LogRepository struct {
-	DB *mongo.Client
+	DB       *mongo.Client
+	Database *mongo.Database
 }
 
 func newLogRepository(db *mongo.Client) LogRepository {
+	database := db.Database(DBName)
+
 	return LogRepository{
-		DB: db,
+		DB:       db,
+		Database: database,
 	}
 }
 
 func (lr *LogRepository) Insert(logData model.Log) error {
-	collection := lr.DB.Database(DBName).Collection(collectionName)
+	collection := lr.Database.Collection(collectionName)
 
-	_, err := collection.InsertOne(context.TODO(), logData)
+	filter := bson.M{
+		"messageid": logData.MessageID,
+		"phone":     logData.Phone,
+		"sender":    logData.Sender,
+	}
+
+	update := bson.M{
+		"$set": logData, // Все поля из logData будут обновлены
+	}
+
+	opts := options.Update().SetUpsert(true)
+
+	_, err := collection.UpdateOne(context.TODO(), filter, update, opts)
 	if err != nil {
 		return err
 	}
@@ -34,7 +51,7 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 }
 
 func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
-	collection := lr.DB.Database(DBName).Collection(collectionName)
+	collection := lr.Database.Collection(collectionName)
 
 	filter := bson.M{
 		"messageid": log.MessageID,
@@ -52,7 +69,7 @@ func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 }
 
 func (lr *LogRepository) Update(logData model.Log) error {
-	collection := lr.DB.Database(DBName).Collection(collectionName)
+	collection := lr.Database.Collection(collectionName)
 
 	filter := bson.M{
 		"messageid": logData.MessageID,
@@ -62,19 +79,19 @@ func (lr *LogRepository) Update(logData model.Log) error {
 
 	update := bson.M{
 		"$set": bson.M{
-			"user_id":       logData.UserID,
-			"action_id":     logData.ActionID,
-			"action_title":  logData.ActionTitle,
-			"action_type":   logData.ActionType,
-			"message":       logData.Message,
-			"sender":        logData.Sender,
-			"status":        logData.Status,
-			"language":      logData.Language,
-			"full_response": logData.FullResponse,
-			"created":       logData.Created,
-			"updated":       logData.Updated,
-			"statusDelive":  logData.StatusDelive,
-			"cost":          logData.Cost,
+			"userid":       logData.UserID,
+			"actionid":     logData.ActionID,
+			"actiontitle":  logData.ActionTitle,
+			"actiontype":   logData.ActionType,
+			"message":      logData.Message,
+			"sender":       logData.Sender,
+			"status":       logData.Status,
+			"language":     logData.Language,
+			"fullresponse": logData.FullResponse,
+			"created":      logData.Created,
+			"updated":      logData.Updated,
+			"statusdelive": logData.StatusDelive,
+			"cost":         logData.Cost,
 		},
 	}
 
