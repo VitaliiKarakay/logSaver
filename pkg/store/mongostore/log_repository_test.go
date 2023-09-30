@@ -18,7 +18,7 @@ func (s *StoreSuite) TestLogInsert() {
 	if err != nil {
 		log.Print(err)
 	}
-	s.NotNil(err)
+	s.NoError(err)
 }
 
 func (s *StoreSuite) TestLogGet() {

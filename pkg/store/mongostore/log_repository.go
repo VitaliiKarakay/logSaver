@@ -37,7 +37,7 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 	}
 
 	update := bson.M{
-		"$set": logData, // Все поля из logData будут обновлены
+		"$set": logData,
 	}
 
 	opts := options.Update().SetUpsert(true)
