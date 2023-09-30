@@ -22,7 +22,7 @@ import (
 */
 
 func main() {
-	cfg, err := config.ReadConfig()
+	cfg, err := config.ReadMongoConfig()
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -18,7 +18,7 @@ type LogRepository struct {
 	Database *mongo.Database
 }
 
-func newLogRepository(db *mongo.Client) LogRepository {
+func NewLogRepository(db *mongo.Client) LogRepository {
 	database := db.Database(DBName)
 
 	return LogRepository{
@@ -96,6 +96,17 @@ func (lr *LogRepository) Update(logData model.Log) error {
 	}
 
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (lr *LogRepository) DeleteAllLogs() error {
+	collection := lr.DB.Database(DBName).Collection(collectionName)
+
+	_, err := collection.DeleteMany(context.TODO(), bson.M{})
 	if err != nil {
 		return err
 	}

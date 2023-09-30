@@ -32,7 +32,7 @@ func New(conf *config.Config) (*DB, error) {
 	}
 
 	conn := &DB{DB: client}
-	conn.LogRepository = newLogRepository(client)
+	conn.LogRepository = NewLogRepository(client)
 
 	return conn, nil
 }
