@@ -21,10 +21,6 @@ type DB struct {
 	LogRepository
 }
 
-func (*DB) setTableNames() {
-	logTableName = config.LogTest
-}
-
 func (database *DB) createTestTables() {
 	query := `DECLARE
     table_exists NUMBER;
