@@ -17,9 +17,9 @@ type PostgresConfig struct {
 	IsTest   bool   `env:"IS_TEST"`
 }
 
-func (c PostgresConfig) GetConnectionString(config PostgresConfig) string {
-	return "user=" + config.Username + " password=" + config.Password + " host=" + config.Server + " port=" +
-		config.Port + " dbname=" + config.DBName + " sslmode=disable"
+func (c PostgresConfig) GetConnectionString() string {
+	return "user=" + c.Username + " password=" + c.Password + " host=" + c.Server + " port=" +
+		c.Port + " dbname=" + c.DBName + " sslmode=disable"
 }
 
 func (c PostgresConfig) Validate() error {

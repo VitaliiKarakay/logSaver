@@ -16,7 +16,7 @@ type DB struct {
 }
 
 func New(conf *config.Config) (*DB, error) {
-	connectionString := conf.MongoConfig.GetConnectionString(conf.MongoConfig)
+	connectionString := conf.MongoConfig.GetConnectionString()
 
 	clientOptions := options.Client().ApplyURI(connectionString)
 	client, err := mongo.Connect(context.TODO(), clientOptions)

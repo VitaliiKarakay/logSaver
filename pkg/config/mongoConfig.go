@@ -15,9 +15,9 @@ type MongoConfig struct {
 	Port     string `env:"DB_PORT_MONGO"`
 }
 
-func (c MongoConfig) GetConnectionString(config MongoConfig) string {
-	return mongoDriver + "://" + config.Username + ":" + config.Password + "@" +
-		config.Server + ":" + config.Port
+func (c MongoConfig) GetConnectionString() string {
+	return mongoDriver + "://" + c.Username + ":" + c.Password + "@" +
+		c.Server + ":" + c.Port
 }
 
 func (c MongoConfig) Validate() error {

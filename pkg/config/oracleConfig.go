@@ -17,9 +17,9 @@ type OracleConfig struct {
 	IsTest   bool   `env:"IS_TEST"`
 }
 
-func (c OracleConfig) GetConnectionString(config OracleConfig) string {
-	return oracleDriver + "://" + config.Username + ":" + config.Password + "@" +
-		config.Server + ":" + config.Port + "/" + config.Service
+func (c OracleConfig) GetConnectionString() string {
+	return oracleDriver + "://" + c.Username + ":" + c.Password + "@" +
+		c.Server + ":" + c.Port + "/" + c.Service
 }
 
 func (c OracleConfig) Validate() error {

@@ -16,7 +16,7 @@ type DB struct {
 }
 
 func New(conf *config.Config) (*DB, error) {
-	connectionString := conf.OracleConfig.GetConnectionString(conf.OracleConfig)
+	connectionString := conf.OracleConfig.GetConnectionString()
 
 	db, err := sql.Open("oracle", connectionString)
 	if err != nil {
