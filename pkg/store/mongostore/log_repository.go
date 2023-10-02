@@ -145,7 +145,7 @@ func (lr *LogRepository) UpdateEmailLog(data model.EmailLog) error {
 	collectionEmailLog := lr.Database.Collection(collectionEmailLog)
 
 	filter := bson.M{
-		"uniqueKey": data.UniqueKey,
+		"uniquekey": data.UniqueKey,
 	}
 
 	update := bson.M{
