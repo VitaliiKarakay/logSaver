@@ -7,7 +7,7 @@ import (
 	"logSaver/pkg/model"
 )
 
-var logTableName = "Log"
+var logTableName = "SMSLog"
 
 type LogRepository struct {
 	DB *sql.DB
@@ -19,7 +19,7 @@ func newLogRepository(db *sql.DB) LogRepository {
 	}
 }
 
-func (lr *LogRepository) Insert(logData model.Log) error {
+func (lr *LogRepository) Insert(logData model.SMSLog) error {
 	query := `INSERT INTO ` + logTableName + ` (user_id, 
 												phone, 
 												action_id, 
@@ -85,8 +85,8 @@ func (lr *LogRepository) Insert(logData model.Log) error {
 	return nil
 }
 
-func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
-	existLogData := model.Log{}
+func (lr *LogRepository) Get(log *model.SMSLog) (model.SMSLog, error) {
+	existLogData := model.SMSLog{}
 	firstPart := "SELECT USER_ID, " +
 		"PHONE, " +
 		"ACTION_ID, " +
@@ -144,8 +144,8 @@ func (lr *LogRepository) Get(log *model.Log) (model.Log, error) {
 	return existLogData, nil
 }
 
-func (lr *LogRepository) Update(logData model.Log) error {
-	firstPart := "Update " + logTableName
+func (lr *LogRepository) Update(logData model.SMSLog) error {
+	firstPart := "UpdateSMSLog " + logTableName
 	lastPart := " SET user_id = :UserID, " +
 		"phone = :Phone, " +
 		"action_id = :ActionID, " +
@@ -199,7 +199,7 @@ func (lr *LogRepository) Update(logData model.Log) error {
 	return nil
 }
 
-func splitTime(logData *model.Log) (string, string, string) {
+func splitTime(logData *model.SMSLog) (string, string, string) {
 	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
 	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
 	timezone := logData.Created.UTC().Format("-07:00")

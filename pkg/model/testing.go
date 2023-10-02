@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func CreateTestLog(t *testing.T) Log {
+func CreateTestLog(t *testing.T) SMSLog {
 	t.Helper()
 	created, err := time.Parse(time.RFC3339, "2023-02-27T00:27:00.031+02:00")
 	if err != nil {
@@ -18,7 +18,7 @@ func CreateTestLog(t *testing.T) Log {
 		fmt.Println("Parsing updated data error: ", err)
 	}
 
-	return Log{
+	return SMSLog{
 		UserID:       2134496917,
 		Phone:        "380953071221",
 		ActionID:     324,
@@ -37,7 +37,7 @@ func CreateTestLog(t *testing.T) Log {
 	}
 }
 
-func CreateLogForUpdate(t *testing.T) Log {
+func CreateLogForUpdate(t *testing.T) SMSLog {
 	t.Helper()
 
 	updated, err := time.Parse(time.RFC3339, "22023-02-27T06:27:05.097Z")
@@ -45,7 +45,7 @@ func CreateLogForUpdate(t *testing.T) Log {
 		fmt.Println("Parsing updated data error: ", err)
 	}
 
-	return Log{
+	return SMSLog{
 		Phone:        "380953071221",
 		Sender:       "intistele",
 		Status:       "success",

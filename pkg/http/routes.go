@@ -16,8 +16,11 @@ func Run(db *mongostore.DB) error {
 	r.GET("/", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"Message": "Log Saver"})
 	})
-	r.POST("/log", handler.CreateLog)
-	r.PUT("/log", handler.UpdateLog)
+	r.POST("/log/sms", handler.CreateSMSLog)
+	r.PUT("/log/sms", handler.UpdateSMSLog)
+
+	r.POST("/log/email", handler.CreateEmailLog)
+	r.PUT("/log/email", handler.UpdateEmailLog)
 
 	return r.Run(":8080")
 }

@@ -11,7 +11,7 @@ import (
 
 func TestLog_UpdateExistLog(t *testing.T) {
 	log := model.CreateTestLog(t)
-	newLog := model.Log{
+	newLog := model.SMSLog{
 		Status:       "Sent",
 		StatusDelive: 2,
 		Cost:         14.88,

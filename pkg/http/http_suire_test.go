@@ -69,8 +69,8 @@ func (s *HttpSuite) cleanDB() {
 
 func (s *HttpSuite) setupHTTPServer() {
 	r := gin.Default()
-	r.POST("/log", s.logHandler.CreateLog)
-	r.PUT("/log", s.logHandler.UpdateLog)
+	r.POST("/log", s.logHandler.CreateSMSLog)
+	r.PUT("/log", s.logHandler.UpdateSMSLog)
 
 	go func() {
 		if err := r.Run(":8080"); err != nil {

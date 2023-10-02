@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type Log struct {
+type SMSLog struct {
 	UserID       int `db:"USER_ID"`
 	Phone        string
 	ActionID     int    `db:"ACTION_ID"`
@@ -20,7 +20,7 @@ type Log struct {
 	Cost         float32
 }
 
-func (l *Log) UpdateExistLog(newLogData *Log) {
+func (l *SMSLog) UpdateExistLog(newLogData *SMSLog) {
 	l.Status = newLogData.Status
 	l.StatusDelive = newLogData.StatusDelive
 	l.Cost = newLogData.Cost
