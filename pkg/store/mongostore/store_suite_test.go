@@ -1,22 +1,18 @@
-package store_test
+package mongostore_test
 
 import (
-	"database/sql"
 	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 
 	"logSaver/pkg/config"
-	"logSaver/pkg/store"
+	"logSaver/pkg/store/mongostore"
 )
 
 type StoreSuite struct {
 	suite.Suite
-	Store  *store.DB
-	Oracle *sql.DB
-
-	tables []string
+	Store *mongostore.DB
 }
 
 func TestRunSuite(t *testing.T) {
@@ -24,15 +20,12 @@ func TestRunSuite(t *testing.T) {
 }
 
 func (s *StoreSuite) SetupSuite() {
-	s.tables = []string{
-		config.LogTest,
-	}
-	cfg, err := config.ReadConfig()
+	cfg, err := config.ReadMongoConfig()
 	if err != nil {
 		fmt.Println("ReadConfig ", err)
 	}
 
-	db, err := store.New(cfg)
+	db, err := mongostore.New(cfg)
 	if err != nil {
 		fmt.Println("store.New ", err)
 	}
@@ -53,10 +46,10 @@ func (s *StoreSuite) TearDownSuite() {
 }
 
 func (s *StoreSuite) cleanDB() {
-	for _, table := range s.tables {
-		_, err := s.Store.Oracle.Exec(`TRUNCATE TABLE ` + table)
-		if err != nil {
-			fmt.Println("cleanDB ", err)
-		}
+	lr := mongostore.NewLogRepository(s.Store.DB)
+
+	err := lr.DeleteAllLogs()
+	if err != nil {
+		fmt.Println("Error while cleaning the DB ", err)
 	}
 }

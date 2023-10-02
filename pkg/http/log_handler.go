@@ -6,11 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"logSaver/pkg/model"
-	"logSaver/pkg/store"
+	"logSaver/pkg/store/mongostore"
+	_ "logSaver/pkg/store/oraclestore"
 )
 
 type LogHandler struct {
-	DB *store.DB
+	DB *mongostore.DB
 }
 
 func (lh *LogHandler) CreateLog(context *gin.Context) {
@@ -27,7 +28,7 @@ func (lh *LogHandler) CreateLog(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"message": "log saved"})
+	context.JSON(http.StatusOK, gin.H{"message": "log saved to Mongo"})
 }
 
 func (lh *LogHandler) UpdateLog(context *gin.Context) {

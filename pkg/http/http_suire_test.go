@@ -9,12 +9,13 @@ import (
 
 	"logSaver/pkg/config"
 	"logSaver/pkg/http"
-	"logSaver/pkg/store"
+	"logSaver/pkg/store/mongostore"
+	_ "logSaver/pkg/store/postgresstore"
 )
 
 type HttpSuite struct {
 	suite.Suite
-	Store      *store.DB
+	Store      *mongostore.DB
 	logHandler http.LogHandler
 
 	tables []string
@@ -29,12 +30,12 @@ func (s *HttpSuite) SetupSuite() {
 		config.LogTest,
 	}
 
-	cfg, err := config.ReadConfig()
+	cfg, err := config.ReadMongoConfig()
 	if err != nil {
 		fmt.Println("ReadConfig ", err)
 	}
 
-	db, err := store.New(cfg)
+	db, err := mongostore.New(cfg)
 	if err != nil {
 		fmt.Println("store.New ", err)
 	}
@@ -58,11 +59,11 @@ func (s *HttpSuite) TearDownSuite() {
 }
 
 func (s *HttpSuite) cleanDB() {
-	for _, table := range s.tables {
-		_, err := s.Store.Oracle.Exec(`TRUNCATE TABLE ` + table)
-		if err != nil {
-			fmt.Println("cleanDB ", err)
-		}
+	lr := mongostore.NewLogRepository(s.Store.DB)
+
+	err := lr.DeleteAllLogs()
+	if err != nil {
+		fmt.Println("Error while cleaning the DB ", err)
 	}
 }
 

@@ -1,4 +1,4 @@
-package store
+package oraclestore
 
 import (
 	"database/sql"
@@ -10,20 +10,20 @@ import (
 )
 
 type DB struct {
-	Oracle *sql.DB
+	DB *sql.DB
 
 	LogRepository
 }
 
 func New(conf *config.Config) (*DB, error) {
-	connectionString := "oracle://" + conf.Username + ":" + conf.Password + "@" +
-		conf.Server + ":" + conf.Port + "/" + conf.Service
+	connectionString := conf.OracleConfig.GetConnectionString()
+
 	db, err := sql.Open("oracle", connectionString)
 	if err != nil {
 		return nil, err
 	}
-	conn := &DB{Oracle: db}
-	if conf.IsTest {
+	conn := &DB{DB: db}
+	if conf.OracleConfig.IsTest {
 		conn.setTableNames()
 		conn.createTestTables()
 	}
@@ -33,7 +33,7 @@ func New(conf *config.Config) (*DB, error) {
 }
 
 func (database *DB) CloseConnection() error {
-	return database.Oracle.Close()
+	return database.DB.Close()
 }
 
 func (*DB) setTableNames() {
@@ -70,7 +70,7 @@ BEGIN
         )';
     END IF;
 END;`
-	_, err := database.Oracle.Exec(query)
+	_, err := database.DB.Exec(query)
 	if err != nil {
 		fmt.Println("createTestTables", err)
 	}
