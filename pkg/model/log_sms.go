@@ -26,3 +26,11 @@ func (l *SMSLog) UpdateExistLog(newLogData *SMSLog) {
 	l.Cost = newLogData.Cost
 	l.Updated = newLogData.Updated
 }
+
+func (l *SMSLog) GetCreated() time.Time {
+	return l.Created
+}
+
+func (l *SMSLog) GetUpdated() time.Time {
+	return l.Updated
+}

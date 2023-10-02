@@ -104,7 +104,7 @@ func (lr *LogRepository) UpdateSMSLog(logData model.SMSLog) error {
 	return nil
 }
 
-func (lr *LogRepository) InsertEmailLog(data *model.EmailLog) error {
+func (lr *LogRepository) InsertEmailLog(data model.EmailLog) error {
 	collection := lr.Database.Collection(collectionEmailLog)
 
 	filter := bson.M{
@@ -156,7 +156,7 @@ func (lr *LogRepository) UpdateEmailLog(data model.EmailLog) error {
 			"actiontitle":  data.ActionTitle,
 			"actiontype":   data.ActionType,
 			"title":        data.Title,
-			"sendler":      data.Sendler,
+			"sendler":      data.Sender,
 			"status":       data.Status,
 			"fullresponse": data.FullResponse,
 			"created":      data.Created,

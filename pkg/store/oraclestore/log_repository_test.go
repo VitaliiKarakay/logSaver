@@ -11,10 +11,10 @@ import (
 func (s *StoreSuite) TestLogInsert() {
 	newLog := model.CreateTestLog(s.T())
 
-	err := s.Store.LogRepository.Insert(newLog)
+	err := s.Store.LogRepository.InsertSMSLog(newLog)
 	s.NoError(err)
 
-	err = s.Store.LogRepository.Insert(newLog)
+	err = s.Store.LogRepository.InsertSMSLog(newLog)
 	if err != nil {
 		log.Print(err)
 	}
@@ -24,10 +24,10 @@ func (s *StoreSuite) TestLogInsert() {
 func (s *StoreSuite) TestLogGet() {
 	newLog := model.CreateTestLog(s.T())
 
-	err := s.Store.LogRepository.Insert(newLog)
+	err := s.Store.LogRepository.InsertSMSLog(newLog)
 	s.NoError(err)
 
-	receivedLog, err := s.Store.LogRepository.Get(&newLog)
+	receivedLog, err := s.Store.LogRepository.GetSMSLog(&newLog)
 	assert.Equal(s.T(), newLog.UserID, receivedLog.UserID)
 	assert.Equal(s.T(), newLog.Phone, receivedLog.Phone)
 	assert.Equal(s.T(), newLog.ActionID, receivedLog.ActionID)
@@ -47,14 +47,14 @@ func (s *StoreSuite) TestLogGet() {
 
 func (s *StoreSuite) TestUpdateLog() {
 	newLog := model.CreateTestLog(s.T())
-	err := s.Store.LogRepository.Insert(newLog)
+	err := s.Store.LogRepository.InsertSMSLog(newLog)
 
 	logForUpdate := model.CreateLogForUpdate(s.T())
 	newLog.UpdateExistLog(&logForUpdate)
-	err = s.Store.LogRepository.Update(newLog)
+	err = s.Store.LogRepository.UpdateSMSLog(newLog)
 	s.NoError(err)
 
-	updatedLog, err := s.Store.LogRepository.Get(&newLog)
+	updatedLog, err := s.Store.LogRepository.GetSMSLog(&newLog)
 	s.NoError(err)
 	assert.Equal(s.T(), logForUpdate.Phone, updatedLog.Phone)
 	assert.Equal(s.T(), logForUpdate.Sender, updatedLog.Sender)

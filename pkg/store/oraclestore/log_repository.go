@@ -7,7 +7,8 @@ import (
 	"logSaver/pkg/model"
 )
 
-var logTableName = "SMSLog"
+var SMSLogTableName = "Log"
+var EmailLogTableName = "email_log"
 
 type LogRepository struct {
 	DB *sql.DB
@@ -19,8 +20,8 @@ func newLogRepository(db *sql.DB) LogRepository {
 	}
 }
 
-func (lr *LogRepository) Insert(logData model.SMSLog) error {
-	query := `INSERT INTO ` + logTableName + ` (user_id, 
+func (lr *LogRepository) InsertSMSLog(logData model.SMSLog) error {
+	query := `INSERT INTO ` + SMSLogTableName + ` (user_id, 
 												phone, 
 												action_id, 
 												action_title,
@@ -85,7 +86,7 @@ func (lr *LogRepository) Insert(logData model.SMSLog) error {
 	return nil
 }
 
-func (lr *LogRepository) Get(log *model.SMSLog) (model.SMSLog, error) {
+func (lr *LogRepository) GetSMSLog(log *model.SMSLog) (model.SMSLog, error) {
 	existLogData := model.SMSLog{}
 	firstPart := "SELECT USER_ID, " +
 		"PHONE, " +
@@ -106,7 +107,7 @@ func (lr *LogRepository) Get(log *model.SMSLog) (model.SMSLog, error) {
 		"MESSAGE_ID = :MessageID AND " +
 		"PHONE = :Phone AND " +
 		"SENDER = :Sender"
-	resultQuery := firstPart + logTableName + lastPart
+	resultQuery := firstPart + SMSLogTableName + lastPart
 	statement, err := lr.DB.Prepare(resultQuery)
 	if err != nil {
 		return existLogData, err
@@ -144,8 +145,8 @@ func (lr *LogRepository) Get(log *model.SMSLog) (model.SMSLog, error) {
 	return existLogData, nil
 }
 
-func (lr *LogRepository) Update(logData model.SMSLog) error {
-	firstPart := "UpdateSMSLog " + logTableName
+func (lr *LogRepository) UpdateSMSLog(logData model.SMSLog) error {
+	firstPart := "UpdateSMSLog " + SMSLogTableName
 	lastPart := " SET user_id = :UserID, " +
 		"phone = :Phone, " +
 		"action_id = :ActionID, " +
@@ -199,10 +200,69 @@ func (lr *LogRepository) Update(logData model.SMSLog) error {
 	return nil
 }
 
-func splitTime(logData *model.SMSLog) (string, string, string) {
-	createdTime := logData.Created.UTC().Format("2006-01-02 15:04:05.000")
-	updatedTime := logData.Updated.UTC().Format("2006-01-02 15:04:05.000")
-	timezone := logData.Created.UTC().Format("-07:00")
+func (lr *LogRepository) InsertEmailLog(logData model.EmailLog) error {
+	query := `INSERT INTO ` + EmailLogTableName + ` (user_id, 
+												email, 
+												action_id, 
+												action_title,
+												action_type,
+												title, 
+												sender, 
+												status, 
+												full_response, 
+												created, 
+												updated, 
+												unique_key)
+										VALUES (:UserID, 
+												:Email, 
+												:ActionID, 
+												:ActionTitle, 
+												:ActionType,
+												:Title, 
+												:Sender, 
+												:Status, 
+												:FullResponse,
+												TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+												TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'),
+												:UniqueKey)`
+	statement, err := lr.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		statementErr := statement.Close()
+		if statementErr != nil {
+			fmt.Println(statementErr)
+		}
+	}()
+	createdTime, updatedTime, timezone := splitTime(&logData)
+
+	_, err = statement.Exec(
+		logData.UserID,
+		logData.Email,
+		logData.ActionID,
+		logData.ActionTitle,
+		logData.ActionType,
+		logData.Title,
+		logData.Sender,
+		logData.Status,
+		logData.FullResponse,
+		createdTime+" "+timezone,
+		updatedTime+" "+timezone,
+		logData.UniqueKey)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func splitTime(logData model.LogData) (string, string, string) {
+	createdTime := logData.GetCreated().UTC().Format("2006-01-02 15:04:05.000")
+	updatedTime := logData.GetUpdated().UTC().Format("2006-01-02 15:04:05.000")
+	timezone := logData.GetCreated().UTC().Format("-07:00")
 
 	return createdTime, updatedTime, timezone
 }
