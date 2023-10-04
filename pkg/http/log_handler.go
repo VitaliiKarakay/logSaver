@@ -75,28 +75,28 @@ func (lh *LogHandler) CreateEmailLog(context *gin.Context) {
 }
 
 func (lh *LogHandler) UpdateEmailLog(context *gin.Context) {
-	//newLogData := model.EmailLog{}
-	//if err := context.BindJSON(&newLogData); err != nil {
-	//	context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	//
-	//	return
-	//}
-	//
-	//existLogData, err := lh.DB.LogRepository.GetEmailLog(&newLogData)
-	//if err != nil {
-	//	context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
-	//
-	//	return
-	//}
-	//
-	//existLogData.UpdateExistLog(&newLogData)
-	//
-	//err = lh.DB.LogRepository.UpdateEmailLog(existLogData)
-	//if err != nil {
-	//	context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
-	//
-	//	return
-	//}
-	//
-	//context.JSON(http.StatusOK, gin.H{"message": "log updated"})
+	newLogData := model.EmailLog{}
+	if err := context.BindJSON(&newLogData); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	existLogData, err := lh.DB.LogRepository.GetEmailLog(&newLogData)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
+
+		return
+	}
+
+	existLogData.UpdateExistLog(&newLogData)
+
+	err = lh.DB.LogRepository.UpdateEmailLog(existLogData)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
+
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "log updated"})
 }

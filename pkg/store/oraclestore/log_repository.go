@@ -146,7 +146,7 @@ func (lr *LogRepository) GetSMSLog(log *model.SMSLog) (model.SMSLog, error) {
 }
 
 func (lr *LogRepository) UpdateSMSLog(logData model.SMSLog) error {
-	firstPart := "UpdateSMSLog " + SMSLogTableName
+	firstPart := "Update " + SMSLogTableName
 	lastPart := " SET user_id = :UserID, " +
 		"phone = :Phone, " +
 		"action_id = :ActionID, " +
@@ -252,6 +252,106 @@ func (lr *LogRepository) InsertEmailLog(logData model.EmailLog) error {
 		updatedTime+" "+timezone,
 		logData.UniqueKey)
 
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (lr *LogRepository) GetEmailLog(log *model.EmailLog) (model.EmailLog, error) {
+	existLogData := model.EmailLog{}
+	firstPart := "SELECT USER_ID, " +
+		"EMAIL, " +
+		"ACTION_ID, " +
+		"ACTION_TITLE, " +
+		"ACTION_TYPE," +
+		"TITLE, " +
+		"SENDER, " +
+		"STATUS, " +
+		"FULL_RESPONSE, " +
+		"CREATED, " +
+		"UPDATED, " +
+		"UNIQUE_KEY FROM "
+	lastPart := " WHERE " +
+		"UNIQUE_KEY = :UniqueKey"
+	resultQuery := firstPart + EmailLogTableName + lastPart
+	statement, err := lr.DB.Prepare(resultQuery)
+	if err != nil {
+		return existLogData, err
+	}
+
+	defer func() {
+		statementErr := statement.Close()
+		if statementErr != nil {
+			fmt.Println(statementErr)
+		}
+	}()
+
+	result := statement.QueryRow(log.UniqueKey)
+	err = result.Scan(
+		&existLogData.UserID,
+		&existLogData.Email,
+		&existLogData.ActionID,
+		&existLogData.ActionTitle,
+		&existLogData.ActionType,
+		&existLogData.Title,
+		&existLogData.Sender,
+		&existLogData.Status,
+		&existLogData.FullResponse,
+		&existLogData.Created,
+		&existLogData.Updated,
+		&existLogData.UniqueKey,
+	)
+	if err != nil {
+		return existLogData, err
+	}
+
+	return existLogData, nil
+}
+
+func (lr *LogRepository) UpdateEmailLog(logData model.EmailLog) error {
+	firstPart := "Update " + EmailLogTableName
+	lastPart := " SET user_id = :UserID, " +
+		"email = :Email, " +
+		"action_id = :ActionID, " +
+		"action_title = :ActionTitle, " +
+		"action_type = :ActionType, " +
+		"title = :Title, " +
+		"sender = :Sender, " +
+		"status = :Status, " +
+		"full_response = :FullResponse, " +
+		"created = TO_TIMESTAMP_TZ(:Created, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), " +
+		"updated = TO_TIMESTAMP_TZ(:Updated, 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'), " +
+		"unique_key = :UniqueKey " +
+		"WHERE unique_key = :UniqueKey"
+	resultQuery := firstPart + lastPart
+	statement, err := lr.DB.Prepare(resultQuery)
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		statementErr := statement.Close()
+		if statementErr != nil {
+			fmt.Println(statementErr)
+		}
+	}()
+	createdTime, updatedTime, timezone := splitTime(&logData)
+
+	_, err = statement.Exec(
+		logData.UserID,
+		logData.Email,
+		logData.ActionID,
+		logData.ActionTitle,
+		logData.ActionType,
+		logData.Title,
+		logData.Sender,
+		logData.Status,
+		logData.FullResponse,
+		createdTime+" "+timezone,
+		updatedTime+" "+timezone,
+		logData.UniqueKey)
 	if err != nil {
 		return err
 	}
