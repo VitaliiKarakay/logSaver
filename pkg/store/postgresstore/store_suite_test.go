@@ -27,12 +27,13 @@ func (s *StoreSuite) SetupSuite() {
 	s.tables = []string{
 		config.LogTest,
 	}
-	cfg, err := config.ReadPostgresConfig()
+	cfg := config.Config{}
+	err := cfg.ReadDatabaseConfigs()
 	if err != nil {
 		fmt.Println("ReadConfig ", err)
 	}
 
-	db, err := postgresstore.New(cfg)
+	db, err := postgresstore.New(&cfg)
 	if err != nil {
 		fmt.Println("store.New ", err)
 	}

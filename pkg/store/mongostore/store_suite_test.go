@@ -20,12 +20,13 @@ func TestRunSuite(t *testing.T) {
 }
 
 func (s *StoreSuite) SetupSuite() {
-	cfg, err := config.ReadMongoConfig()
+	cfg := config.Config{}
+	err := cfg.ReadDatabaseConfigs()
 	if err != nil {
 		fmt.Println("ReadConfig ", err)
 	}
 
-	db, err := mongostore.New(cfg)
+	db, err := mongostore.New(&cfg)
 	if err != nil {
 		fmt.Println("store.New ", err)
 	}

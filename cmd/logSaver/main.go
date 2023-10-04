@@ -22,12 +22,14 @@ import (
 */
 
 func main() {
-	cfg, err := config.ReadPostgresConfig()
+	cfg := config.Config{}
+	err := cfg.ReadDatabaseConfigs()
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db, err := postgresstore.New(cfg)
+	db, err := postgresstore.New(&cfg)
 	if err != nil {
 		log.Fatal(err)
 	}

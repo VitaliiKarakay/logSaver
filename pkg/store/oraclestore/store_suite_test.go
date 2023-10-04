@@ -27,12 +27,13 @@ func (s *StoreSuite) SetupSuite() {
 	s.tables = []string{
 		config.LogTest,
 	}
-	cfg, err := config.ReadOracleConfig()
+	cfg := config.Config{}
+	err := cfg.ReadDatabaseConfigs()
 	if err != nil {
 		fmt.Println("ReadConfig ", err)
 	}
 
-	db, err := oraclestore.New(cfg)
+	db, err := oraclestore.New(&cfg)
 	if err != nil {
 		fmt.Println("store.New ", err)
 	}

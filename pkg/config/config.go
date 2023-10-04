@@ -11,50 +11,63 @@ type Config struct {
 	MongoConfig
 }
 
-func ReadPostgresConfig() (*Config, error) {
-	var cfg Config
+func (cfg *Config) ReadDatabaseConfigs() error {
+	err := cfg.readPostgresConfig()
+	if err != nil {
+		return err
+	}
 
+	err = cfg.readOracleConfig()
+	if err != nil {
+		return err
+	}
+
+	err = cfg.readMongoConfig()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (cfg *Config) readPostgresConfig() error {
 	err := env.Parse(&cfg.PostgresConfig)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = cfg.PostgresConfig.Validate()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &cfg, nil
+	return nil
 }
 
-func ReadOracleConfig() (*Config, error) {
-	var cfg Config
-
+func (cfg *Config) readOracleConfig() error {
 	err := env.Parse(&cfg.OracleConfig)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = cfg.OracleConfig.Validate()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &cfg, nil
+	return nil
 }
 
-func ReadMongoConfig() (*Config, error) {
-	var cfg Config
-
+func (cfg *Config) readMongoConfig() error {
 	err := env.Parse(&cfg.MongoConfig)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = cfg.MongoConfig.Validate()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &cfg, nil
+	return nil
 }
