@@ -5,7 +5,7 @@ import (
 
 	"logSaver/pkg/config"
 	"logSaver/pkg/http"
-	"logSaver/pkg/store/oraclestore"
+	"logSaver/pkg/store/postgresstore"
 	_ "logSaver/pkg/store/postgresstore"
 )
 
@@ -22,12 +22,12 @@ import (
 */
 
 func main() {
-	cfg, err := config.ReadOracleConfig()
+	cfg, err := config.ReadPostgresConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db, err := oraclestore.New(cfg)
+	db, err := postgresstore.New(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}

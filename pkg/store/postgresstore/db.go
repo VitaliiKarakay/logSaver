@@ -36,11 +36,11 @@ func (database *DB) CloseConnection() error {
 }
 
 func (*DB) setTableNames() {
-	logTableName = config.LogTest
+	SMSLogTableName = config.LogTest
 }
 
 func (database *DB) createTestTables() {
-	query := `CREATE TABLE IF NOT EXISTS ` + logTableName + ` (
+	query := `CREATE TABLE IF NOT EXISTS ` + SMSLogTableName + ` (
                                             id SERIAL PRIMARY KEY,
                                             user_id INTEGER,
                                             phone VARCHAR(20),

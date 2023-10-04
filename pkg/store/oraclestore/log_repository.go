@@ -146,7 +146,7 @@ func (lr *LogRepository) GetSMSLog(log *model.SMSLog) (model.SMSLog, error) {
 }
 
 func (lr *LogRepository) UpdateSMSLog(logData model.SMSLog) error {
-	firstPart := "Update " + SMSLogTableName
+	firstPart := "UpdateSMSLog " + SMSLogTableName
 	lastPart := " SET user_id = :UserID, " +
 		"phone = :Phone, " +
 		"action_id = :ActionID, " +
@@ -311,7 +311,7 @@ func (lr *LogRepository) GetEmailLog(log *model.EmailLog) (model.EmailLog, error
 }
 
 func (lr *LogRepository) UpdateEmailLog(logData model.EmailLog) error {
-	firstPart := "Update " + EmailLogTableName
+	firstPart := "UpdateSMSLog " + EmailLogTableName
 	lastPart := " SET user_id = :UserID, " +
 		"email = :Email, " +
 		"action_id = :ActionID, " +

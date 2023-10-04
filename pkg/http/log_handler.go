@@ -6,12 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"logSaver/pkg/model"
-	"logSaver/pkg/store/oraclestore"
 	_ "logSaver/pkg/store/oraclestore"
+	"logSaver/pkg/store/postgresstore"
 )
 
 type LogHandler struct {
-	DB *oraclestore.DB
+	DB *postgresstore.DB
 }
 
 func (lh *LogHandler) CreateSMSLog(context *gin.Context) {

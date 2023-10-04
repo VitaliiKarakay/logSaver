@@ -18,3 +18,20 @@ CREATE TABLE Log
     cost          NUMERIC(10,4),
     CONSTRAINT unique_message_phone_sender UNIQUE (message_id, phone, sender)
 );
+
+CREATE TABLE Email_Log (
+                          id            SERIAL PRIMARY KEY,
+                          UserID        INTEGER,
+                          Email         VARCHAR(255),
+                          ActionID      INTEGER,
+                          ActionTitle   VARCHAR(255),
+                          ActionType    VARCHAR(50), 
+                          Title         VARCHAR(255),
+                          Sendler       VARCHAR(100),
+                          Status        VARCHAR(50), 
+                          FullResponse  VARCHAR(1000),
+                          Created       TIMESTAMP,
+                          Updated       TIMESTAMP,
+                          UniqueKey     VARCHAR(255) UNIQUE
+);
+
