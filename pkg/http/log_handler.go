@@ -6,12 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"logSaver/pkg/model"
-	_ "logSaver/pkg/store/oraclestore"
-	"logSaver/pkg/store/postgresstore"
+	"logSaver/pkg/store/oraclestore"
 )
 
 type LogHandler struct {
-	DB *postgresstore.DB
+	DB *oraclestore.DB
 }
 
 func (lh *LogHandler) CreateSMSLog(context *gin.Context) {
@@ -21,7 +20,7 @@ func (lh *LogHandler) CreateSMSLog(context *gin.Context) {
 
 		return
 	}
-	err := lh.DB.LogRepository.InsertSMSLog(logData)
+	err := lh.DB.SmsRepository.InsertSMSLog(logData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
 
@@ -38,7 +37,7 @@ func (lh *LogHandler) UpdateSMSLog(context *gin.Context) {
 
 		return
 	}
-	existLogData, err := lh.DB.LogRepository.GetSMSLog(&newLogData)
+	existLogData, err := lh.DB.SmsRepository.GetSMSLog(&newLogData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
 
@@ -47,7 +46,7 @@ func (lh *LogHandler) UpdateSMSLog(context *gin.Context) {
 
 	existLogData.UpdateExistLog(&newLogData)
 
-	err = lh.DB.LogRepository.UpdateSMSLog(existLogData)
+	err = lh.DB.SmsRepository.UpdateSMSLog(existLogData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
 
@@ -64,7 +63,7 @@ func (lh *LogHandler) CreateEmailLog(context *gin.Context) {
 
 		return
 	}
-	err := lh.DB.LogRepository.InsertEmailLog(logData)
+	err := lh.DB.EmailRepository.InsertEmailLog(logData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
 
@@ -82,7 +81,7 @@ func (lh *LogHandler) UpdateEmailLog(context *gin.Context) {
 		return
 	}
 
-	existLogData, err := lh.DB.LogRepository.GetEmailLog(&newLogData)
+	existLogData, err := lh.DB.EmailRepository.GetEmailLog(&newLogData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
 
@@ -91,7 +90,7 @@ func (lh *LogHandler) UpdateEmailLog(context *gin.Context) {
 
 	existLogData.UpdateExistLog(&newLogData)
 
-	err = lh.DB.LogRepository.UpdateEmailLog(existLogData)
+	err = lh.DB.EmailRepository.UpdateEmailLog(existLogData)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Server error " + err.Error()})
 

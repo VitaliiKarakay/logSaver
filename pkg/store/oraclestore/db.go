@@ -7,12 +7,15 @@ import (
 	_ "github.com/sijms/go-ora/v2"
 
 	"logSaver/pkg/config"
+	"logSaver/pkg/store/oraclestore/emaillog"
+	"logSaver/pkg/store/oraclestore/smslog"
 )
 
 type DB struct {
 	DB *sql.DB
 
-	LogRepository
+	smslog.SmsRepository
+	emaillog.EmailRepository
 }
 
 func New(conf *config.Config) (*DB, error) {
@@ -27,7 +30,8 @@ func New(conf *config.Config) (*DB, error) {
 		conn.setTableNames()
 		conn.createTestTables()
 	}
-	conn.LogRepository = newLogRepository(db)
+	conn.SmsRepository = newSmsLogRepository(db)
+	conn.EmailRepository = newEmailLogRepository(db)
 
 	return conn, nil
 }

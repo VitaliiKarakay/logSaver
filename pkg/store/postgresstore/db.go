@@ -17,6 +17,7 @@ type DB struct {
 
 func New(conf *config.Config) (*DB, error) {
 	connectionString := conf.PostgresConfig.GetConnectionString()
+
 	db, err := sql.Open(config.PostgresDriver, connectionString)
 	if err != nil {
 		return nil, err
