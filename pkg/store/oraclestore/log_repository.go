@@ -7,8 +7,6 @@ import (
 	"logSaver/pkg/store/oraclestore/smslog"
 )
 
-var SMSLogTableName = "Log"
-
 func newSmsLogRepository(db *sql.DB) smslog.SmsRepository {
 	return smslog.SmsRepository{
 		DB: db,
